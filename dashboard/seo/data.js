@@ -219,7 +219,7 @@ export const COMPETITORS = {
     review: true,
     brandAlias: 'also searched as Klap AI',
     brandBlurb:
-      'Klap is a cloud AI clipper built around one promise: paste a YouTube link and get vertical clips back in minutes. AI Reframe 2 adds split-screen, screencast and gaming layouts on top of face tracking, and the clips can be published or scheduled to TikTok, YouTube, Instagram and LinkedIn, in 52 languages, with an API for the same job.',
+      'Klap (Klap AI in most searches) is a cloud AI clipper built around one promise: paste a YouTube link and get vertical clips back in minutes. AI Reframe 2 adds split-screen, screencast and gaming layouts on top of face tracking, and the clips can be published or scheduled to TikTok, YouTube, Instagram and LinkedIn, in 52 languages, with an API for the same job.',
     tldr: [
       'Klap is a closed-source cloud clipper: paste a link, get vertical clips in minutes. Paid plans start at $14/month billed yearly for 100 clips a month, and monthly billing costs roughly twice that.',
       'There is no ongoing free plan, only one free video with no credit card. Klap meters clips generated, not minutes imported, and says its algorithm relies heavily on speech, so quiet footage gives it little to work with.',
@@ -276,7 +276,7 @@ export const COMPETITORS = {
     ],
     brandAlias: 'also written Vizard AI',
     brandBlurb:
-      'Vizard (written Vizard AI in most searches, and served from vizard.ai) is a browser-based clipper: it transcribes the video, finds candidate moments and hands you a timeline to fix them in. That transcription pass is also its video-to-text feature, so a transcript comes out of the same job as the clips. Lately it has added an AI agent and an AI Studio for generated video around the clipper.',
+      'Vizard (written Vizard AI in most searches, and served from vizard.ai) is a browser-based AI clip maker: it transcribes the video, finds candidate moments and hands you a timeline to fix them in. That transcription pass is also its video-to-text feature, so a transcript comes out of the same job as the clips. Lately it has added an AI agent and an AI Studio for generated video around the clipper.',
     // Asked on the comparison page: the switch questions.
     extraFaq: [
       {
@@ -431,6 +431,13 @@ export const COMPETITORS = {
       'Move the long-form clipping to OpenShorts and judge the caption style on one episode: the first video is clipped free up to 60 minutes.',
       'Compare the meter: Submagic counts videos a month (15, 40 or 100); OpenShorts Cloud counts source minutes, and the self-hosted edition counts nothing.',
       'If caption design is non-negotiable for a short, Submagic\'s Starter plan covers 15 videos of up to 2 minutes for $12/month billed yearly.',
+    ],
+    // "sub magic" and "submagic.co" are how part of the brand search is typed.
+    extraFaq: [
+      {
+        q: 'Is Sub Magic the same as Submagic (submagic.co)?',
+        a: 'Yes. Sub Magic is a common spelling of Submagic, the caption editor at submagic.co, which also clips long videos with Magic Clips. Plans start at $12/month billed yearly ($19 month to month), with a trial and no free plan, checked October 2026.',
+      },
     ],
     bestFor:
       'Submagic is the better pick if captions are the product and your videos are short. OpenShorts is the better pick if you are starting from long-form video and want the moment finding and reframing to be the core of the tool, or want it free and self-hosted.',
@@ -702,7 +709,7 @@ export const COMPETITORS = {
     },
     review: true,
     brandBlurb:
-      'Choppity (choppity.com) is a cloud AI clipper aimed mostly at podcasters, educators and marketers. Upload a file or paste a YouTube link and it transcribes the video, proposes 20 to 50 or more short clips, reframes them to vertical while following the active speaker, and captions them; you then refine each clip by editing its transcript. Around the clipper it sells a screen recorder for tutorials and a social scheduler, and it exports 9:16, 1:1 and 16:9.',
+      'Choppity (choppity.com) is a cloud AI clip maker aimed mostly at podcasters, educators and marketers. Upload a file or paste a YouTube link and it transcribes the video, proposes 20 to 50 or more short clips, reframes them to vertical while following the active speaker, and captions them; you then refine each clip by editing its transcript. Around the clipper it sells a screen recorder for tutorials and a social scheduler, and it exports 9:16, 1:1 and 16:9.',
     isFree:
       'Yes, with limits. The free plan needs no credit card and includes the clipper, the editor and captions, but it covers 1 hour of AI video analysis a month, deletes projects after 3 days and puts a small Choppity logo in the corner of every export. Removing the logo starts on Starter at $24/month, or $16.80/month billed yearly.',
     tiers: [
@@ -807,7 +814,7 @@ export const COMPETITORS = {
     },
     review: true,
     brandBlurb:
-      'Searches for getmunch land on munchstudio.com: the old getmunch.com address now redirects there. Munch Studio is sold as "the AI that does your social media marketing for you". It reads your website, videos and brand material, builds a content strategy, then generates posts, posters, carousels, video scripts and short videos and publishes them to Instagram, Facebook, LinkedIn, YouTube and TikTok, with a performance dashboard. Cutting long videos into clips is still there, as a monthly allowance of "video repurposing" minutes, and its help centre still documents clips tailored per platform with AI subtitles.',
+      'Searches for getmunch or Munch AI land on munchstudio.com: the old getmunch.com address now redirects there. Munch Studio is sold as "the AI that does your social media marketing for you". It reads your website, videos and brand material, builds a content strategy, then generates posts, posters, carousels, video scripts and short videos and publishes them to Instagram, Facebook, LinkedIn, YouTube and TikTok, with a performance dashboard. Cutting long videos into clips is still there, as a monthly allowance of "video repurposing" minutes, and its help centre still documents clips tailored per platform with AI subtitles.',
     isFree:
       'No. There is no free plan, only a 7-day free trial, and its help centre says the trial turns into a paid subscription on the plan you picked unless you cancel before it ends. A monthly payment can be refunded within 7 days, and a yearly one within 14, only if you have not used the platform.',
     tiers: [
@@ -859,6 +866,10 @@ export const COMPETITORS = {
       'If you came for the clipper, OpenShorts is the open source GetMunch alternative: free under MIT on your own machine, or hosted from $12/month with a free plan you can keep.',
     ],
     extraFaq: [
+      {
+        q: 'Is Munch AI the same as GetMunch?',
+        a: 'Yes. Munch AI is how most people search for Munch, the AI clipper that lived at getmunch.com. That address now redirects to munchstudio.com, and the product is sold as Munch Studio. Checked 29 October 2026.',
+      },
       {
         q: 'What happened to GetMunch?',
         a: 'getmunch.com now redirects to munchstudio.com. The product is sold as Munch Studio, an AI social media marketing service, and clipping long videos continues inside it as minutes of "video repurposing" per plan. Checked 29 October 2026.',

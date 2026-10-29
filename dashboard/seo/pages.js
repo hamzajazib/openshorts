@@ -907,6 +907,18 @@ ${sources([
 /* Podcasts are the hardest input for naive croppers, and the densest commercial
  * SERP in the niche. The page leads with the two-speaker problem because SPLIT
  * and active-speaker cutting are capabilities the competitor pages cannot show. */
+// Shown on the page and emitted in the FAQPage schema alike.
+const PODCAST_EXTRA_FAQ = [
+  {
+    q: 'How do I turn a podcast into TikToks?',
+    a: 'Paste the episode link or upload the file, and the clips come back vertical with captions. Send them to TikTok from the dashboard, where each one arrives as a draft in your TikTok inbox to post from the app, or download the MP4s. Reels and Shorts publish directly.',
+  },
+  {
+    q: 'Can I get a transcript of my podcast?',
+    a: 'Every episode clipped here is transcribed word by word to find the moments and burn the captions. For the text of a whole episode hosted on YouTube, the free YouTube transcript generator returns its captions with timestamps as TXT or SRT, with no account.',
+  },
+]
+
 const podcastToShorts = () => ({
   path: '/podcast-to-shorts',
   facts: [
@@ -922,7 +934,13 @@ const podcastToShorts = () => ({
   relatedTitle: 'Related tools',
   breadcrumb: [{ name: 'Use cases', path: '/use-cases' }, { name: 'Podcast clips' }],
   published: '2026-08-04',
-  updated: '2026-10-05',
+  updated: '2026-10-29',
+  cta: {
+    label: 'Clip an episode',
+    title: 'Paste an episode link, get podcast clips',
+    body: `First episode free up to 60 minutes, then ${CLOUD.freeMinutes} minutes a month, watermarked, no credit card. No watermark from $${STARTER.monthly.price}/month, or self-host free under MIT.`,
+    button: 'Get free clips',
+  },
   tldr: [
     'A two-person podcast is the hardest input an auto-clipper faces: a single centered crop shows the wrong person half the time, or an empty chair. OpenShorts detects a real two-shot and renders both speakers stacked in half-frames, so a reply never happens off screen.',
     'The rest of the pipeline is the same as for any long video: word-level transcription, scene detection, Gemini scoring the 3 to 15 strongest moments, subtitles burned in, and direct publishing to TikTok, Instagram Reels and YouTube Shorts.',
@@ -970,6 +988,16 @@ services are the closest case to a podcast: one speaker for most of an hour, and
 the <a href="/use-cases/sermons">sermon clip maker</a> page covers clipping only
 the sermon and keeping a preacher who walks the stage in frame.</p>
 
+<h2>Podcast to TikTok, Reels and Shorts</h2>
+<p>Video podcast clips are the same file on every platform: vertical, 15 to 60
+seconds by default, captions burned in for the people who watch on mute.
+Connect your accounts once and each clip publishes to YouTube Shorts and
+Instagram Reels directly. Podcast to TikTok works the same way with one
+difference TikTok imposes: the clip lands in your TikTok inbox as a draft, and
+you post it from the app, where you also add the caption and a sound. A week of
+clips can be scheduled in one go, one a day, so each episode keeps working
+until the next one is out.</p>
+
 <h2>Real podcast clips, next to their source</h2>
 <p>A two-person episode filmed as one wide shot: both hosts stay in frame,
 stacked, and the captions sit on the seam.</p>
@@ -990,6 +1018,16 @@ ${pricingParagraph('podcast')}
 <p>A weekly one-hour episode is about 260 minutes of source a month. Move the
 slider to your own schedule:</p>
 ${costCalculator(['opus-clip', 'vizard', 'vidyo-ai', '2short'], { minutes: 270 })}
+
+<h2>Podcast transcripts</h2>
+<p>Every episode clipped here is transcribed first, word by word, because that
+transcript is what the AI reads to find the moments and what the captions are
+cut from. If what you need is the text of a whole episode rather than clips,
+and the podcast is on YouTube, the free
+<a href="/youtube-transcript-generator">YouTube transcript generator</a> gives
+you the podcast transcript from the captions YouTube already has, with
+timestamps, as TXT or SRT, with no sign-up. Show notes, quotes and an article
+version of the episode all start from it.</p>
 
 <h2>Podcast clips or audiograms: which one do you need?</h2>
 <p>"Podcast clips" means two different things depending on how the show is
@@ -1033,6 +1071,7 @@ ${faqBlock([
     q: 'Does it work with hour-long episodes?',
     a: 'Yes, long-form is the design case. Processing time scales with length: on CPU roughly 5 to 8 minutes of processing per 8 minutes of source, on an NVIDIA GPU about a tenth of that. The AI moment scoring reads the transcript rather than the raw video, so episode length does not degrade selection quality.',
   },
+  ...PODCAST_EXTRA_FAQ,
 ])}
 
 ${sources([
@@ -1049,6 +1088,7 @@ ${sources([
       q: 'How does it handle two people talking?',
       a: 'Real two-shots render as a stacked split layout keeping both speakers visible; optionally it hard-cuts to the active speaker instead.',
     },
+    ...PODCAST_EXTRA_FAQ,
   ],
 })
 
@@ -1818,8 +1858,12 @@ episode of the month.</p>
         a: 'Yes: OpenShorts self-hosted. It is MIT-licensed, runs on your own machine with Docker, and never adds a watermark because the self-hosted edition contains no watermark code. You supply a Google Gemini API key, whose free tier covers 1,500 requests a day. Hosted, OpenShorts Cloud clips your first video free up to 60 minutes and then 20 minutes a month with a watermark; paid plans from $12/month have none.',
       },
       {
-        q: 'Can I use Opus Clip for free every month?',
+        q: 'Is Opus Clip free to use every month?',
         a: 'Yes, within its free plan: 60 minutes of source video a month, exports up to 1080p with a watermark, no editing, and clips must be exported within 3 days. The 7-day Pro trial needs no credit card, but its exports are watermarked too.',
+      },
+      {
+        q: 'What are the best OpusClip alternatives?',
+        a: `Opus Clip (also searched as Opus Clips or Opus Clip AI) has a few, each better at one thing, all checked ${monthYear(OPUS.checked)}. OpenShorts, if you want it open source and free to self-host, or hosted from $${CLOUD.lowPrice}/month. Vizard, if you edit every clip by hand in a timeline (from ${COMPETITORS.vizard.entryPrice}). Klap, for the fastest link-to-clips path, billed per clip (from ${COMPETITORS.klap.entryPrice}). Submagic, if caption design is the product (from ${COMPETITORS.submagic.entryPrice}). Choppity, if you want to trim clips by editing their transcript.`,
       },
       {
         q: 'What is the catch with the free self-hosted route?',
@@ -1858,8 +1902,8 @@ const opusAi = () => ({
   body: `
 <h2>Is Opus AI the same thing as Opus Clip?</h2>
 <p>Yes, in almost every search. The clipping product is OpusClip, the company is
-OpusClip Inc., and the site is <code>opus.pro</code>; "Opus AI" is the shorter
-name people type. The same company runs a second product under the Opus name,
+OpusClip Inc., and the site is <code>opus.pro</code>; "Opus AI", "Opus Clip AI"
+and "Opus Clips" are the other names people type for the same clipper. The same company runs a second product under the Opus name,
 <strong>Agent Opus</strong> (agent.opus.pro), an AI video agent with its own
 Free, Pro and Max plans. Paid credits work in both, so if you pay for one you can
 spend in the other.</p>

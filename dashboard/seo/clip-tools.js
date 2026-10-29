@@ -179,11 +179,15 @@ const ytClipFaq = [
   { q: 'What format are the clips?', a: 'MP4 files in 9:16, at least 1080 pixels wide (1080x1920 from a 1080p source), with captions and the hook burned in. Each clip also comes with an AI-written title and description.' },
   { q: 'Which YouTube links work?', a: 'Any link to one public video: watch pages, youtu.be links, Shorts, embeds and the replays of finished livestreams. Playlists, channels and search pages are refused because they are not one video; open the video and paste its own link. Private and members-only videos cannot be fetched.' },
   { q: 'Can I clip someone else\'s YouTube video?', a: 'Only with the rights to it: your own channel, a client\'s channel you manage, a guest\'s episode with their permission, or licensed and public-domain footage. Every job asks you to confirm that. Reposting other people\'s videos without permission is copyright infringement and the platforms remove it.' },
+  { q: 'Can I use it as a YouTube trimmer to cut one part of a video?', a: 'Partly. After you paste the link, "clip only part of it" sets a start and an end on two sliders in 5-second steps (the stretch has to be at least a minute long), and only that stretch is analysed and counted against your minutes. The AI then cuts its clips from inside it, and the clip editor lets you trim or extend each clip on word boundaries. What it does not do is export one exact, hand-picked segment as it is; for that, the guide on how to clip a YouTube video covers YouTube Studio and ffmpeg.' },
+  { q: 'Do I need to download the YouTube video first?', a: 'No. Paste the link and OpenShorts fetches the video itself, so there is no downloader or converter step. Only for private or members-only videos do you download the file from YouTube Studio and upload it instead.' },
   { q: 'How is it different from Opus Clip or Vizard?', a: `All three take a YouTube link and return vertical clips. Opus Clip and Vizard are closed cloud products with free plans of 60 credits a month (checked ${longDate(COMPETITORS['opus-clip'].checked)}); OpenShorts is open source and can be self-hosted, and its hosted plans are billed monthly from $${CLOUD.lowPrice}. Vizard has the more complete hand-editing timeline, and Opus Clip the larger caption-style library.` },
 ]
 
 const youtubeClipMaker = () => common('/platforms/youtube', {
-  title: 'YouTube Clip Maker: Paste a Link, Get AI Clips | OpenShorts',
+  // "clip a youtube video" and "youtube clipper" outweigh "youtube clip maker"
+  // (which the H1 keeps); 58 characters with the brand.
+  title: 'YouTube Clipper: Clip a YouTube Video With AI | OpenShorts',
   description: `Clip a YouTube video from its link: AI picks the 15-60 s moments, reframes them to 9:16 and adds captions. First video free up to ${FIRST_VIDEO_MINUTES} min, watermarked.`,
   h1: 'YouTube clip maker: clip a YouTube video from its link',
   breadcrumb: [{ name: 'Platforms', path: '/platforms' }, { name: 'YouTube clip maker' }],
@@ -214,14 +218,14 @@ you trim, extend, split or reorder them, snapped to word boundaries; the
 reframe editor lets you move the crop scene by scene where the tracker chose
 wrong; captions can be restyled and the hook rewritten.</p>
 
-<h2>Clipping on YouTube versus making clips from YouTube</h2>
+<h2>YouTube clips versus clips made from a YouTube video</h2>
 <p>YouTube has its own <strong>Clip</strong> button, and it is worth knowing
-what it is before choosing a tool. A YouTube clip is a 5 to 60 second
+what YouTube clips are before choosing a tool. A YouTube clip is a 5 to 60 second
 selection that stays on YouTube: it plays from the original video, it can only
 be watched by people who can watch that video, and you share it as a link. It
 is a bookmark with a start and an end, not a file. It stays horizontal, has no
 burned-in captions and cannot be posted to TikTok or Instagram.</p>
-<p>A clip maker produces new videos. What comes out of OpenShorts is a set of
+<p>A video clip maker for YouTube produces new videos. What comes out of OpenShorts is a set of
 separate MP4 files in 9:16, each one reframed, captioned and titled, that you
 keep like any other export and can upload anywhere. When people search for a
 "YouTube video clip converter" this is usually what they mean: turn the long
@@ -230,6 +234,24 @@ horizontal upload into short vertical pieces, not save a timestamp.</p>
 href="/how-to/clip-a-youtube-video">how to clip a YouTube video</a> walks
 through the four free ways: the Clip button, YouTube Studio, ffmpeg, and an AI
 clipper for Shorts.</p>
+
+<h2>Cutting one part of a YouTube video: trimmer, cutter or clipper</h2>
+<p>People who search for a YouTube trimmer or a YouTube video cutter usually
+want one thing: a specific stretch out of a long video, as a file. A YouTube
+clipper like this one starts from the other end, finding the moments for you,
+but you can point it at the stretch you mean. On OpenShorts Cloud, once you
+paste the link the app shows how long the video is and how many minutes it will
+use, and <strong>clip only part of it</strong> opens two sliders, from and to,
+in 5-second steps. The stretch must run at least a minute, and only that stretch
+is downloaded, analysed and counted against your minutes.</p>
+<p>The AI then cuts its clips from inside that stretch, and the advanced
+options set how many (an exact number from 1 to 15) and how long. Each clip can
+be trimmed, extended or split afterwards in the clip editor, on word boundaries,
+so it starts and ends on a whole sentence. What OpenShorts does not do is export
+a frame-exact segment you marked by hand, untouched and horizontal: YouTube
+Studio's trim tool or a one-line ffmpeg command does that, and the <a
+href="/how-to/clip-a-youtube-video">guide to clipping a YouTube video</a> covers
+both.</p>
 
 <h2>Which links it takes</h2>
 <p>Anything that points at <strong>one</strong> public video works: a
@@ -344,6 +366,8 @@ const shortsFaq = [
   { q: 'How many Shorts does one video give?', a: 'For a video longer than about 12 minutes the AI is asked for 6 to 12, fewer when the material does not hold them. Shorter videos give fewer. You can set an exact number from 1 to 15.' },
   { q: 'Does it write the titles?', a: 'Yes. Every clip comes with an AI-written title and description meant for a Short, and the hook text burned over the opening seconds is generated from what is said in that clip.' },
   { q: 'What is the difference from the YouTube to Shorts converter page?', a: 'Same pipeline, different question. The converter page is about the link-first flow: paste a YouTube URL, get clips. This page is about the Shorts themselves: length, hooks, captions, titles, posting and doing it on a schedule.' },
+  { q: 'What aspect ratio does a YouTube Short need?', a: `9:16 vertical, 1080x1920 pixels for a 1080p video, up to 3 minutes long; YouTube also takes square uploads as Shorts (its help pages, checked ${SPECS_CHECKED}). Every Short made here is 9:16 and at least 1080 pixels wide.` },
+  { q: 'Can it turn a long video into short videos automatically?', a: 'Yes, that is the whole job: paste the long video (or upload it) and the AI picks the moments and cuts them into vertical Shorts with captions, hooks and titles. With Autopilot on a paid plan it also happens on its own for every new upload on your connected channel.' },
   { q: 'Is it an AI YouTube Shorts generator or a clipper?', a: `A clipper: the Shorts are cut from your own footage, so they sound like you and point back to your channel. If you have no long video at all, OpenShorts also has an AI Shorts tab that makes UGC-style videos with AI actors, from ${UGC_PRICE} a video.` },
   { q: 'How does it compare with Opus Clip for Shorts?', a: `Both cut Shorts from long videos and post them to YouTube. Opus Clip has a free plan of 60 credits a month with a watermark and paid plans from ${COMPETITORS['opus-clip'].entryPrice} (checked ${longDate(COMPETITORS['opus-clip'].checked)}), and a larger caption-style library. OpenShorts is open source and self-hostable, and hosted from $${CLOUD.lowPrice}/month.` },
 ]
@@ -359,7 +383,7 @@ const youtubeShortsMaker = () => common('/platforms/youtube-shorts', {
     title: 'Your next week of Shorts is already in last week\'s video',
     body: `Free plan: ${PRICE_LINE}`,
   },
-  related: ['/platforms/youtube', '/platforms/instagram-reels', '/how-to/clip-a-youtube-video', '/platforms/tiktok', '/opus-clip-free-alternative'],
+  related: ['/platforms/youtube', '/how-to/youtube-shorts-aspect-ratio', '/platforms/instagram-reels', '/how-to/clip-a-youtube-video', '/platforms/tiktok', '/opus-clip-free-alternative'],
   tldr: [
     'A one-hour podcast episode is, as far as YouTube Shorts are concerned, a quarry. OpenShorts reads the whole of it, ranks every stretch for how well it would play to someone who has never heard of you, and cuts the best 6 to 12 into vertical Shorts with captions, a hook over the opening seconds and a title written for the Shorts feed.',
     'Then it can post them to your channel for you, one a day if you like, so the long video you already made keeps feeding the Shorts shelf for a week or more.',
@@ -380,6 +404,27 @@ OpenShorts makes answers one of those constraints:</p>
 <li><strong>Sound off.</strong> Captions are burned in from the word-level transcript, placed about 15% above the bottom edge so the title, channel name and buttons of the Shorts player do not sit on top of them.</li>
 <li><strong>The title.</strong> Each clip gets its own title and description, written for a Short rather than copied from the long video.</li>
 </ul>
+
+<h2>YouTube Shorts aspect ratio and size</h2>
+<p>The short answer: 9:16, vertical, at 1080x1920 pixels, and up to 3 minutes
+long. YouTube also accepts square uploads as Shorts, but a vertical frame is the
+one that fills the phone. Every Short this maker exports is 9:16 and at least
+1080 pixels wide, so a 1080p source gives exactly 1080x1920, and nothing needs
+resizing before upload. A horizontal source is reframed rather than
+letterboxed, as described above. For the specs in full, see the guide to the
+<a href="/how-to/youtube-shorts-aspect-ratio">YouTube Shorts aspect
+ratio</a>.</p>
+
+<h2>Long to short: why one long video beats a blank page</h2>
+<p>Most Shorts makers start from nothing: a template, stock footage, a script
+for an AI voice. A long to short workflow starts from something you already
+made and already know works, so every Short is your own voice and points back
+to the full video. That is the job of this AI Shorts maker: it reads the long
+video, finds the passages that hold up alone, and turns each into a vertical
+Short. As a YouTube short creator it suits anyone who already records long
+(podcasts, tutorials, talks, streams), and turning one long video into short
+videos this way is how a channel that publishes once a week ends up with
+something new on the Shorts shelf every day.</p>
 
 <h2>Picking the moments: why the whole video is read</h2>
 <p>The cheap way to make Shorts is to cut the first minute, or a random one. The
@@ -489,6 +534,7 @@ const tiktokFaq = [
   { q: 'Can I clip a TikTok video or a TikTok LIVE?', a: 'A public TikTok video link works as a source if it has at least 45 seconds of material, which mostly means long uploads. A LIVE cannot be clipped while it is on air; if you saved the replay, upload that file.' },
   { q: 'How long should a TikTok clip be?', a: 'The default here is 15 to 60 seconds, because that is how long most moments that stand alone run. TikTok accepts far longer uploads; raise the maximum up to 180 seconds in the advanced options for a story that needs it.' },
   { q: 'How many TikToks does one video give?', a: 'A video longer than about 12 minutes is asked for 6 to 12 clips, and fewer come back when fewer moments stand alone. You can ask for an exact number from 1 to 15.' },
+  { q: 'Can it make TikTok clips from a long video without me picking the moments?', a: 'Yes. The AI reads the whole transcript and picks the moments itself; you can override any of it afterwards in the clip editor, or mark one stretch with "clip only part of it" before the job starts so it only looks there.' },
   { q: 'Is it an AI TikTok generator?', a: `It is a clipper: every TikTok is cut from your own footage. For videos made from a script with no footage at all, the AI Shorts tab makes UGC-style videos with AI actors, from ${UGC_PRICE} a video.` },
   { q: 'Can I schedule TikToks?', a: 'Yes. Schedule a week spreads a batch of clips over the coming days. On TikTok each one still arrives as a draft at its scheduled time, so you finish it in the app.' },
   { q: 'How does it compare with Klap or Opus Clip for TikTok?', a: `All three cut long videos into TikToks. Klap is the fastest path from a link to a first clip but gives one free video and bills clips (from ${COMPETITORS.klap.entryPrice}); Opus Clip has a watermarked free plan of 60 credits a month and paid plans from ${COMPETITORS['opus-clip'].entryPrice}. Both checked ${longDate(COMPETITORS.klap.checked)}. OpenShorts is open source, self-hostable, and hosted from $${CLOUD.lowPrice}/month billed monthly.` },
@@ -511,7 +557,7 @@ const tiktokClipMaker = () => common('/platforms/tiktok', {
     'Send them to your TikTok account from the dashboard and they wait in your TikTok inbox as drafts, where you add the sound, the hashtags and the caption the way TikTok rewards. Or download the files and post them however you like.',
   ],
   body: `
-${stepsBlock('How to turn a long video into TikToks', tiktokSteps)}
+${stepsBlock('How to turn a long video into TikTok clips', tiktokSteps)}
 
 <h2>YouTube to TikTok without the download step</h2>
 <p>The usual way to get a YouTube video onto TikTok is a chain of tools: a
@@ -522,9 +568,10 @@ offers, does the cutting, reframing and captioning in one pass, and hands you
 finished vertical files, at least 1080 pixels wide.</p>
 <p>That also works for the videos you never posted to YouTube. A Zoom or
 Riverside recording, a webinar, a podcast episode recorded locally: upload
-the file instead of pasting a link and the rest is the same.</p>
+the file instead of pasting a link and the rest is the same. Long video to
+TikTok is one job here whatever the source, not a chain of four apps.</p>
 
-<h2>What a TikTok clip needs that a YouTube video does not have</h2>
+<h2>What TikTok clips need that a YouTube video does not have</h2>
 <p>A horizontal video dropped onto TikTok as it is plays as a thin strip with
 black bars, and people scroll past it. Three things turn a moment from a long
 video into something that works in the For You feed:</p>
@@ -621,8 +668,10 @@ const reelSteps = [
 ]
 
 const reelFaq = [
-  { q: 'Is there a free AI reel generator here?', a: `Yes, with an honest asterisk: the hosted free plan clips your first video whole up to ${FIRST_VIDEO_MINUTES} minutes, then ${CLOUD.freeMinutes} minutes a month, and those Reels carry a watermark. No credit card is needed. Paid plans start at $${CLOUD.lowPrice}/month and remove the watermark; the self-hosted edition is free under MIT with no watermark.` },
+  { q: 'Is this a free reels maker?', a: `Yes, with an honest asterisk: the hosted free plan clips your first video whole up to ${FIRST_VIDEO_MINUTES} minutes, then ${CLOUD.freeMinutes} minutes a month, and those Reels carry a watermark. No credit card is needed. Paid plans start at $${CLOUD.lowPrice}/month and remove the watermark; the self-hosted edition is free under MIT with no watermark.` },
   { q: 'Does it post Reels to Instagram directly?', a: 'Yes. Connect your Instagram account in the dashboard and each clip can be published as a Reel with its own description, or scheduled across a week.' },
+  { q: 'Is there a reels maker app to install?', a: 'No app store app: OpenShorts Cloud runs in the web browser and the self-hosted edition runs on your own machine with Docker. Either way the Reels you make are MP4 files you can post from the Instagram app, or publish to Instagram straight from the dashboard.' },
+  { q: 'What size is an Instagram Reel made here?', a: 'Vertical 9:16, at least 1080 pixels wide: 1080x1920 from a 1080p source, with captions and the hook burned in. The guide to Instagram Reel dimensions covers the rest of the specs.' },
   { q: 'Does it work for Facebook Reels?', a: 'The clips are the right shape for Facebook Reels, but OpenShorts does not publish to Facebook. Download the MP4 and post it from the Facebook app or Meta Business Suite.' },
   { q: 'How long can an Instagram Reel be?', a: 'Instagram raised the Reels limit to 3 minutes in January 2025. Clips here are 15 to 60 seconds by default; set the maximum up to 180 seconds in the advanced options for longer Reels.' },
   { q: 'Will the captions be covered by the Instagram buttons?', a: 'They are placed about 15% above the bottom edge, which keeps them clear of the caption text and account name Instagram draws at the bottom of a Reel.' },
@@ -634,17 +683,19 @@ const reelFaq = [
 ]
 
 const aiReelGenerator = () => common('/platforms/instagram-reels', {
-  title: 'AI Reel Generator: Turn Long Videos Into Reels | OpenShorts',
-  description: `AI reel maker for Instagram and Facebook: turns a long video into captioned 9:16 Reels, posted to Instagram. First video free up to ${FIRST_VIDEO_MINUTES} min, watermarked.`,
-  h1: 'AI reel generator: turn long videos into Instagram and Facebook Reels',
-  breadcrumb: [{ name: 'Platforms', path: '/platforms' }, { name: 'AI reel generator' }],
+  // "reels maker" and "ai reels maker" together outweigh "ai reel generator"
+  // (kept in the steps heading, the FAQ and the app node); 56 characters.
+  title: 'AI Reels Maker: Turn Long Videos Into Reels | OpenShorts',
+  description: `AI reels maker and reel generator: a long video in, captioned 9:16 Reels out for Instagram and Facebook. First video free up to ${FIRST_VIDEO_MINUTES} min, watermarked.`,
+  h1: 'AI reels maker: turn long videos into Instagram and Facebook Reels',
+  breadcrumb: [{ name: 'Platforms', path: '/platforms' }, { name: 'AI reels maker' }],
   tool: { entry: 'tool-paste-link', html: widget('Paste a video link (YouTube, Facebook, Instagram...)', 'Video link to turn into Reels') },
   cta: {
     label: 'Make Reels',
     title: 'Reels cut from what you already recorded',
     body: `Free plan: ${PRICE_LINE}`,
   },
-  related: ['/platforms/tiktok', '/platforms/youtube-shorts', '/use-cases/sermons', '/alternatives/vidyo-ai'],
+  related: ['/how-to/instagram-reel-dimensions', '/how-to/make-a-reel-on-facebook', '/platforms/tiktok', '/platforms/youtube-shorts', '/use-cases/sermons', '/alternatives/vidyo-ai'],
   tldr: [
     'A one-hour webinar, recorded on Zoom and sitting in a folder, holds a month of Reels for most businesses. Upload it here and the AI reads all of it, finds the 6 to 12 passages that make sense on their own, and returns each one as a vertical Reel with captions, a hook over the first seconds and a description written for Instagram.',
     'Publish them to Instagram as Reels from the same screen, one a day if you schedule a week, or download them for Facebook. Nothing is generated from stock footage: every Reel is you, or your guest, saying the thing.',
@@ -669,7 +720,10 @@ asked for 6 to 12 Reels, and returns fewer rather than padding.</p>
 
 <h2>What makes a clip work as a Reel</h2>
 <h3>The full screen, with the person in it</h3>
-<p>Reels are 9:16 and fill the phone. A horizontal recording is reframed rather
+<p>Reels are 9:16 and fill the phone; every Reel here is at least 1080 pixels
+wide, 1080x1920 from a 1080p source (the
+<a href="/how-to/instagram-reel-dimensions">Instagram Reel dimensions</a> guide
+has the full specs). A horizontal recording is reframed rather
 than shrunk: one speaker is face-tracked with a stabiliser that holds the
 frame steady, two people on camera together are stacked, and a screen share
 keeps the slide or the demo readable with the presenter beside it. If you
@@ -683,7 +737,7 @@ name Instagram draws there. Change the style afterwards if your brand has one.</
 <p>Each Reel gets a hook line written from what is said in it, drawn over the
 opening seconds at the height that covers the least of anyone's face.</p>
 
-<h2>Instagram Reels: posting directly</h2>
+<h2>Instagram Reels maker: posting directly</h2>
 <p>Connect your Instagram account once in the dashboard. Each clip then has a
 publish button that posts it to Instagram as a Reel, with the description
 written for Instagram (edit it first if you like), and
@@ -696,7 +750,7 @@ that stand alone end.</p>
 fill all three. Posting is available on the free plan as well, with a daily
 cap.</p>
 
-<h2>Facebook Reels: same file, posted by you</h2>
+<h2>Facebook Reels maker: same file, posted by you</h2>
 <p>A Reel made here is the right shape for Facebook: vertical, captioned, with
 the hook burned in. What OpenShorts does not do is publish to Facebook, so
 download the MP4 and post it from the Facebook app or Meta Business Suite.
@@ -704,7 +758,9 @@ Going the other way works: if your source is on Facebook (a public video, or
 the replay of a public Facebook Live), paste its link above and it is fetched
 like a YouTube link. Facebook Live is where many churches, local businesses and
 community groups already stream, which makes it one of the most common sources
-for Reels.</p>
+for Reels. For posting by hand, the guide on <a
+href="/how-to/make-a-reel-on-facebook">how to make a reel on Facebook</a> walks
+through the Facebook side.</p>
 
 <h2>Reels in other languages</h2>
 <p>An account with followers in several countries can post the same Reel more
@@ -753,8 +809,8 @@ ${sources([
   extraNodes: [
     howToNode('/platforms/instagram-reels', 'How to turn a long video into Instagram Reels with AI',
       'Cut a long recording into vertical Reels with captions and hooks, then publish them to Instagram.', reelSteps),
-    appNode('/platforms/instagram-reels', 'OpenShorts AI reel generator',
-      'AI reel generator: turns long videos into captioned 9:16 Reels for Instagram and Facebook, and publishes them to Instagram.'),
+    appNode('/platforms/instagram-reels', 'OpenShorts AI reels maker',
+      'AI reels maker and Instagram reel generator: turns long videos into captioned 9:16 Reels for Instagram and Facebook, and publishes them to Instagram.'),
   ],
 })
 
@@ -779,12 +835,15 @@ const twitchFaq = [
   { q: 'Can I turn Twitch clips into TikToks?', a: 'A Twitch clip of 45 seconds or more can be pasted as a source and comes back reframed to 9:16 with captions. Shorter clips are under the minimum; for those a static crop in the free video to 9:16 converter is the quicker route.' },
   { q: 'How many clips do I get from a stream?', a: 'Each job returns up to about a dozen: for any source longer than 12 minutes the AI is asked for 6 to 12. A four-hour stream clipped in four one-hour parts gives four times as many candidates as the same stream clipped in one job.' },
   { q: 'Does it post to TikTok and YouTube Shorts?', a: 'Yes, from the dashboard: YouTube Shorts and Instagram Reels are published directly, and TikTok receives the clip as a draft in your TikTok inbox to finish in the app.' },
+  { q: 'Can it manage the clips in my Twitch account?', a: 'No. OpenShorts does not connect to your Twitch account, so it cannot list, edit or delete the clips under your channel\'s Clips page. It works from links: paste a VOD, or a single Twitch clip of 45 seconds or more, and it makes new vertical clips from it.' },
+  { q: 'Is there an editor for the Twitch clips it makes?', a: 'Yes. Each clip opens in a clip editor where you can trim, extend, split or reorder its stretches on word boundaries, move the crop scene by scene, restyle the captions and rewrite the hook. Edits on clips do not use minutes.' },
   { q: 'Can I clip another streamer\'s VOD?', a: 'Only with their permission, for example as an editor or as part of a clipping programme they run. The VOD belongs to whoever streamed it, and the platforms remove reuploads when the streamer reports them.' },
   { q: 'How does it compare with Opus Clip or Klap for Twitch?', a: `Both bill in ways that hurt on long streams: Opus Clip one credit per imported minute, from ${COMPETITORS['opus-clip'].entryPrice}, and Klap per clip, from ${COMPETITORS.klap.entryPrice}, with a speech-reliant picker (checked ${longDate(COMPETITORS.klap.checked)}). OpenShorts Cloud also bills source minutes, but lets you clip just a stretch, and the self-hosted edition has no meter at all.` },
 ]
 
 const twitchClipMaker = () => common('/platforms/twitch', {
-  title: 'Twitch Clip Maker: AI Clips From Streams and VODs',
+  // "twitch clips" (and "clips for twitch") is the bigger search; 56 characters.
+  title: 'Twitch Clip Maker: AI Twitch Clips From Streams and VODs',
   description: `Twitch clip maker and AI stream clipper: paste a VOD, get 9:16 clips with your facecam kept and captions. First video free up to ${FIRST_VIDEO_MINUTES} min, then watermarked.`,
   h1: 'Twitch clip maker: AI clips from your streams and VODs',
   breadcrumb: [{ name: 'Platforms', path: '/platforms' }, { name: 'Twitch clip maker' }],
@@ -802,13 +861,15 @@ const twitchClipMaker = () => common('/platforms/twitch', {
   body: `
 ${stepsBlock('How the Twitch stream clipper works', twitchSteps)}
 
-<h2>Twitch's own Clip button versus a stream clipper</h2>
+<h2>Twitch clips from the Clip button versus an AI stream clipper</h2>
 <p>Twitch already lets you and your viewers clip. Those clips are short,
 horizontal, made by someone who was watching at the right second, and they live
 on Twitch. They are great for the moment a chat explodes, and useless for the
 ninety minutes nobody happened to clip. A stream clipper starts from the other
 end: the whole VOD, read from start to finish by a model that has no favourite
-moment, cut into vertical clips sized for TikTok, Shorts and Reels.</p>
+moment, cut into vertical clips sized for TikTok, Shorts and Reels. Making
+clips for Twitch channels that way is the job editors and clippers do by hand,
+scrubbing through hours of VOD; here the model does the scrubbing.</p>
 <p>That is also why the box asks for the VOD link rather than your channel. A
 <code>twitch.tv/yourname</code> link is the live channel; the recording is at
 <code>twitch.tv/videos/</code> followed by a number, which you find under
@@ -847,7 +908,8 @@ default in advanced options), each clip is laid out by what is in it:</p>
 </ul>
 <p>If the tracker gets a scene wrong, the reframe editor lets you draw the crop
 yourself for that scene, or split it into two stacked regions, and the rest of
-the clip stays automatic. The <a href="/gta-5-clips">GTA 5 clips</a> page goes
+the clip stays automatic. The rest of the Twitch clip editor works the same way:
+trim or extend a clip on word boundaries, restyle the captions, rewrite the hook. The <a href="/gta-5-clips">GTA 5 clips</a> page goes
 deeper into the inset layout and how it was measured.</p>
 
 <h2>Silent gameplay and music-only streams</h2>
@@ -1081,6 +1143,8 @@ const reframeFaq = [
   { q: 'What if my video is already vertical?', a: 'It is passed through untouched. Every layout exists to win back width a crop throws away, and a vertical source has none to throw away.' },
   { q: 'Can I correct the framing?', a: 'Yes. The reframe editor plays each scene with the uncropped picture and the crop rectangle over it, so you can move the rectangle or split it into two stacked regions. Scenes you do not touch stay automatic.' },
   { q: 'What resolution is the output?', a: 'At least 1080 pixels wide: a 1080p source gives 1080x1920. A smaller crop is scaled up to that floor; a larger source is never scaled down.' },
+  { q: 'How is it different from auto reframe in Premiere Pro or CapCut?', a: 'Those reframe footage you have already edited, inside the editor, with you choosing the moments and adding the captions. Here reframing is one automatic stage of turning a long recording into clips: the moments are picked, cut, reframed per scene (including stacked two-speaker and screen layouts) and captioned without an editor. For a finished horizontal edit that only needs to be vertical, the editor feature is the shorter path.' },
+  { q: 'Can it convert landscape to portrait video?', a: 'Yes, as clips: each clip cut from a landscape (16:9) recording comes back as portrait 9:16, reframed scene by scene. To convert a short landscape video to portrait in one piece with a fixed crop, use the free 9:16 converter.' },
   { q: 'How does it compare with the auto reframe in Opus Clip or 2short.ai?', a: `Both face-track to 9:16. 2short.ai keeps the speaker centred with one tracked crop and has an unwatermarked free plan of 30 minutes, YouTube links only (checked ${longDate(COMPETITORS['2short'].checked)}). OpenShorts adds stacked two-speaker, screencast and webcam-inset layouts, a per-scene manual override, and an open source, self-hostable edition.` },
 ]
 
@@ -1110,7 +1174,7 @@ picture into the middle over a blurred copy or black bars. That is what the
 free <a href="/video-aspect-ratio-converter">video to 9:16 converter</a> does,
 in your browser, with no upload. It is the right tool for a short clip where
 the subject stays in one place, a slide deck, or a wide shot you want to keep
-whole.</p>
+whole. Most tools sold as a vertical video converter are this kind.</p>
 <p>The second is to look at the picture. A person who walks across the stage,
 two people taking turns, a presenter who shares a screen halfway through:
 each of those needs the frame to change with the content, and no single crop
@@ -1179,16 +1243,23 @@ none to give. Horizontal sources are delivered at least 1080 pixels wide, so a
 1080p recording becomes 1080x1920. A smaller crop is scaled up to that floor;
 a larger source is never scaled down.</p>
 
-<h2>Next to the auto reframe in video editors</h2>
-<p>Desktop and mobile editors such as Premiere Pro and CapCut have an auto
-reframe feature too, and it is good at what it does: it reframes a sequence
-you have already cut, inside your edit. The difference here is where it sits.
-Reframing is one stage of turning a long recording into clips, after the
-moments are picked and before the captions are burned, and it can change the
-shape of the frame (stacked halves, screen over presenter), not only the crop
-position. If you already have a finished horizontal edit and only need it
-vertical, an editor's auto reframe, or the free converter for short files, is
-the shorter path.</p>
+<h2>Auto Reframe in Premiere Pro or CapCut vs OpenShorts</h2>
+<p>Premiere Pro and CapCut both have an auto reframe feature, and it is good at
+what it does: inside your edit, it reframes a clip or a sequence you have
+already cut to a new aspect ratio, following the motion in the shot. It is a
+manual workflow with an automatic step in it. You still choose the moments,
+cut them, set up the sequence, check the framing and add the captions
+yourself, one video at a time.</p>
+<p>OpenShorts puts reframing somewhere else: it is one stage of turning a long
+recording into clips, after the moments are picked and before the captions are
+burned, with nobody in an editor. And it can change the shape of the frame
+(stacked halves for two people, screen over presenter, an enlarged webcam), not
+only the position of one crop.</p>
+<ul>
+<li><strong>Use the editor's feature</strong> when you already have a finished horizontal edit and only need it vertical, or when you want frame-by-frame control in an editor you know.</li>
+<li><strong>Use OpenShorts</strong> when you start from a long recording and want the clips found, cut, reframed and captioned for you.</li>
+<li><strong>Use the free converter</strong> for a short file where one fixed crop is enough.</li>
+</ul>
 
 ${freeTable(['2short', 'klap', 'opus-clip', 'submagic'])}
 <p>Every tool here reframes with face tracking. The differences are the layouts
@@ -1242,6 +1313,7 @@ const sermonFaq = [
   { q: 'Will it spell names and Bible books correctly?', a: 'Speech recognition spells names the way they sound, so check unusual names and book names before posting. The caption text is editable in the subtitle editor and the timing is kept.' },
   { q: 'Can clips be made in Spanish or another language?', a: 'Captions follow the language that was spoken. With your own ElevenLabs API key, dubbing can also translate a clip into more than 30 languages in the preacher\'s voice and re-caption it.' },
   { q: 'Can new services be clipped automatically every week?', a: 'Yes, with Autopilot on a paid plan, for services streamed to a connected YouTube channel. It clips the first 10 to 90 minutes of each new video (your choice), so set it long enough to reach the sermon. With publishing on, it schedules the best clips one a day.' },
+  { q: 'Can it make church clips from more than sermons?', a: 'Yes, from anything in the service or the week where someone is speaking: testimonies, guest speakers, youth talks, Bible studies, conference sessions. Songs score far below speech and carry their own rights questions, so leave them out with "clip only part of it".' },
   { q: 'How does it compare with Opus Clip?', a: `Opus Clip also cuts sermons into clips. Its free plan is 60 credits a month with a watermark and it bills one credit per imported minute, from ${COMPETITORS['opus-clip'].entryPrice} (checked ${longDate(COMPETITORS['opus-clip'].checked)}), so a 90-minute service uses 90 credits unless you trim it first. OpenShorts lets you clip only the sermon, and is open source and self-hostable.` },
 ]
 
@@ -1278,7 +1350,7 @@ picked instead of the 90 the replay runs.</p>
 transcript and the spoken parts score far higher than lyrics. Trimming simply
 removes the guesswork.</p>
 
-<h2>What makes a sermon moment work as a short clip</h2>
+<h2>What makes sermon clips work on a phone</h2>
 <p>A clip on someone's phone has to make sense with no context: they did not
 hear the reading, the series title or the first point. The scoring is built
 for exactly that. The transcript is split into windows of about 90 seconds
@@ -1329,7 +1401,8 @@ voice and re-captioning it in the new language.</p>
 <h2>A week of clips, scheduled once</h2>
 <p>Connect the church's YouTube, Instagram and TikTok accounts in the
 dashboard, select the clips and use <strong>schedule a week</strong> to spread
-them one a day at the hour you pick. YouTube Shorts and Instagram Reels publish
+them one a day at the hour you pick, so the sermon Shorts and Reels go out
+while the message is still fresh. YouTube Shorts and Instagram Reels publish
 directly. TikTok receives each clip as a draft in its inbox, to be posted from
 the app, which is TikTok's rule for videos sent from other tools.</p>
 <p>If the service is streamed to a YouTube channel every week,
@@ -1339,6 +1412,15 @@ publishing on, schedules the best clips one a day. One setting matters for
 churches: Autopilot clips the first 10 to 90 minutes of each video (30 by
 default), so if the sermon starts 35 minutes in, set it to 60 or 90 or it will
 clip the worship set.</p>
+
+<h2>Church video clips beyond the sermon</h2>
+<p>The same clipper works on any part of church life that is mostly someone
+talking: a testimony, a guest speaker, a youth talk, a Bible study, a
+conference session, a Q&amp;A with the pastor. Paste the replay or upload the
+recording and you get church video clips cut the same way, on sentence
+boundaries, captioned and vertical. What it is not built for is the music: the
+lyrics of a worship set score far below speech, and the song rights question
+above applies to any clip of it.</p>
 
 <h2>Where the replay can come from</h2>
 <p>YouTube and Facebook Live replays are the usual sources and both are pasted

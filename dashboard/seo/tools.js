@@ -70,7 +70,7 @@ const CLIP_MAKERS = [
   { path: '/platforms/youtube', name: 'YouTube clip maker', blurb: 'Paste a YouTube link, get vertical clips with captions and hooks.' },
   { path: '/platforms/youtube-shorts', name: 'YouTube Shorts maker', blurb: 'Shorts from long videos: length, hooks, captions and posting to your channel.' },
   { path: '/platforms/tiktok', name: 'TikTok clip maker', blurb: 'A long video cut into TikToks, sent to TikTok as drafts.' },
-  { path: '/platforms/instagram-reels', name: 'AI reel generator', blurb: 'Instagram Reels from a long video, posted straight to Instagram.' },
+  { path: '/platforms/instagram-reels', name: 'AI reels maker', blurb: 'Instagram Reels from a long video, posted straight to Instagram.' },
   { path: '/platforms/twitch', name: 'Twitch clip maker', blurb: 'Twitch VODs clipped in parts, with the facecam kept.' },
   { path: '/platforms/kick', name: 'Kick clip maker', blurb: 'Kick VOD and clip links, with IRL and facecam layouts.' },
   { path: '/podcast-to-shorts', name: 'Podcast clip maker', blurb: 'Podcast clips with both speakers kept in frame.' },
@@ -229,6 +229,10 @@ const YT_FAQ = [
     a: 'Copy the video link, paste it into the box on this page and click Get transcript. You get the full text with timestamps, which you can copy or download as TXT or SRT. On YouTube itself, open the description and click Show transcript, which shows the text in a panel but has no download button.',
   },
   {
+    q: 'How do I convert a YouTube video to text?',
+    a: 'Paste the link above, untick timestamps and click Copy or Download TXT: you get YouTube to text as one block of prose, built from the video\'s own captions. Keep timestamps on if you want each line to point back to its moment. It works for any public video that has captions, including auto-generated ones.',
+  },
+  {
     q: 'Is this YouTube transcript generator free?',
     a: 'Yes. There is no account, no payment and no sign-up. To keep it fast for everyone it allows 10 transcripts per 10 minutes and 60 per day from the same network, and the whole tool has a shared daily cap that resets at midnight UTC.',
   },
@@ -295,7 +299,7 @@ ${YT_STEPS.map(([name, text]) => `<li><strong>${esc(name)}.</strong> ${esc(text)
 </ol>
 <p>The tool reads the captions the video already has on YouTube. It does not
 download the video and does not run speech recognition of its own, which is why
-the answer comes back in about the time a page takes to load. Above the text you
+a YouTube video transcript comes back in about the time a page takes to load. Above the text you
 see the video title, the channel, the length, the word count and where the words
 came from: captions uploaded by the creator, or YouTube's auto-generated ones.</p>
 
@@ -328,8 +332,8 @@ the citation, writing chapters, checking a fact against the video, or handing
 the text to an AI model and asking it to point to where something is said. Each
 timestamp here is a link to that second of the video, and copied or downloaded
 text keeps them as <code>[12:34]</code> at the start of each line.</p>
-<p>Untick timestamps when you want prose: a blog draft, notes, a translation, or
-search. Without timestamps the caption lines are joined into one block, which
+<p>Untick timestamps when you want prose, the plain YouTube to text version: a
+blog draft, notes, a translation, or search. Without timestamps the caption lines are joined into one block, which
 reads far better than line-by-line fragments, because YouTube splits captions
 for the screen, not at the end of sentences.</p>
 
@@ -470,6 +474,10 @@ const TT_FAQ = [
     a: 'Copy the video link (Share, then Copy link in the app), paste it into the box on this page and click Get transcript. You get the text TikTok shows as captions, with timestamps, ready to copy or download as TXT or SRT.',
   },
   {
+    q: 'How do I convert a TikTok to text?',
+    a: 'Paste the TikTok link, untick timestamps and click Copy or Download TXT: the captions come back as one block of text. Keep timestamps on to start each line with its second, or download SRT for a subtitle file.',
+  },
+  {
     q: 'Is the TikTok transcript generator free?',
     a: 'Yes. There is no account, no payment and no sign-up. It allows 10 transcripts per 10 minutes and 60 per day from the same network, with a shared daily cap that resets at midnight UTC.',
   },
@@ -514,12 +522,13 @@ const tiktokTranscriptPage = () => ({
   relatedTitle: 'More free tools',
   related: ['/youtube-transcript-generator', '/platforms/tiktok', '/video-aspect-ratio-converter'],
   body: `
-<h2>How to get the transcript of a TikTok</h2>
+<h2>How to get a TikTok video transcript</h2>
 <ol>
 ${TT_STEPS.map(([name, text]) => `<li><strong>${esc(name)}.</strong> ${esc(text)}</li>`).join('\n')}
 </ol>
-<p>The tool reads the captions TikTok already serves with the video, the same
-lines you see on screen when captions are on. It does not download the video and
+<p>Going from TikTok to transcript takes one paste. The tool reads the captions
+TikTok already serves with the video, the same lines you see on screen when
+captions are on. It does not download the video and
 does not run speech recognition of its own. Above the text you see the caption
 of the post, the creator, the length and the word count.</p>
 

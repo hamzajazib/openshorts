@@ -185,7 +185,8 @@ const thumbFaq = [
   { q: 'Is the text on the thumbnail spelled correctly?', a: 'With the default Crisp setting, yes: the image model leaves one side empty and the text is set afterwards in the Anton typeface with a black stroke, from the exact words you chose. With AI painted, the image model draws the text itself, which can look more integrated but can also misspell it.' },
   { q: 'How many thumbnails do I get per batch?', a: `You choose ${THUMB.uiCounts} in the studio (3 by default). They are different concepts, not one prompt repeated: a text call designs each one (hook text, which side the text sits on, palette, scene) before the images are generated in parallel. A batch costs ${THUMB.batchMinutes} minutes on Cloud whatever the count.` },
   { q: 'Does it write YouTube titles too?', a: `Yes, that is the first step. It brainstorms ${THUMB.brainstorm} titles across seven styles, then a critic scores them and keeps ${THUMB.titles}, with the payoff inside the first ${THUMB.mobileChars} characters and the main keyword in the first three words. A chat lets you ask for changes ("shorter", "less clickbait", "in Spanish") and returns ${THUMB.refined} new options. Refining titles does not use minutes.` },
-  { q: 'Can I use it without a video?', a: 'Yes. Choose "Write your own", type the title (up to 70 characters) and go straight to thumbnail generation. Without a video there are no face frames to pick from and no transcript, so the description is yours to write and publishing from the studio is not available.' },
+  { q: 'Can I use the thumbnail generator without a video?', a: 'Yes. Choose "Write your own", type the title (up to 70 characters) and go straight to thumbnail generation. Without a video there are no face frames to pick from and no transcript, so the description is yours to write and publishing from the studio is not available.' },
+  { q: 'How is it different from a free online thumbnail maker?', a: 'Most thumbnail makers are template editors: you pick a layout and drop in a photo and text. This one generates the image with AI from your own video, with your face taken from its frames and the title written from its transcript, and it outputs a finished 1280x720 JPEG. The trade is that image generation is a paid feature on Cloud, and there is no layer editor for moving elements by hand.' },
   { q: 'Does it change the thumbnail of a video already on my channel?', a: 'No. Publishing from the studio uploads the video you analysed as a new public YouTube video, with the title, description and thumbnail you chose, through your connected YouTube account. To change an existing video, download the JPEG and upload it in YouTube Studio.' },
   { q: 'Does it make Shorts thumbnails?', a: 'It makes 16:9 thumbnails for regular YouTube videos. Shorts are vertical and YouTube handles their cover differently, so for Shorts the clip generator is the relevant tool, not the thumbnail studio.' },
   { q: 'What languages does it work in?', a: 'Titles, thumbnail text and descriptions are written in the language of the video\'s transcript, never translated unless you ask. In the title chat you can ask for another language and the new titles and thumbnail texts come back in it.' },
@@ -217,7 +218,7 @@ const thumbnailMaker = () => ({
     `It is not a free web toy: it lives in the OpenShorts app (the YouTube Studio tab). On the hosted Cloud, thumbnail images are a paid-plan feature from $${STARTER.monthly.price}/month, ${THUMB.batchMinutes} minutes of the plan per batch. Titles and descriptions work on the free plan too, and the self-hosted edition includes everything under MIT with your own Gemini key.`,
   ],
   body: `
-<h2>What the thumbnail studio does</h2>
+<h2>What this AI thumbnail maker does</h2>
 <p>In the app the feature is the <strong>YouTube Studio</strong> tab, and it is
 built around one idea: a thumbnail and a title are one package, so they should
 be made together and from the actual video rather than from a blank prompt. It
@@ -235,7 +236,7 @@ text boxes, and nothing is published until you press the button.</p>
 
 ${stepsBlock('How to make a YouTube thumbnail with AI, in three steps', thumbSteps)}
 
-<h2>What comes out</h2>
+<h2>What the YouTube thumbnail generator produces</h2>
 <table>
 <thead><tr><th>Property</th><th>What the studio produces</th></tr></thead>
 <tbody>
@@ -253,6 +254,15 @@ scene. Then one image call per concept runs in parallel, so three thumbnails are
 three ideas you can choose between, not three near-copies of the same picture.
 If none of them is right, change the instructions ("red and black, dramatic
 lighting, a laptop on fire") and press Regenerate.</p>
+
+<h2>Thumbnail maker or thumbnail generator: what you get here</h2>
+<p>A thumbnail maker in the usual sense is a canvas: templates, stickers, a
+background remover, and you do the design. An AI YouTube thumbnail generator
+does the design from a description. This studio sits closer to the second, with
+one difference that matters: the description is your video. The title, the
+words on the image and the face all come from it, so the result looks like the
+video it is for, and you steer it with plain-text instructions instead of
+dragging layers.</p>
 
 <h2>YouTube thumbnail size and rules</h2>
 <p>YouTube's own guidance for custom thumbnails, checked ${esc(CHECKED)}: a
@@ -437,6 +447,7 @@ const ugcSteps = [
 
 const ugcFaq = [
   { q: 'How much does an AI UGC video cost?', a: `About ${UGC.lowCost} a video in Low Cost mode and about ${UGC.premium} in Premium (the in-app estimate shows up to ${UGC.premiumUi} for Premium), paid to fal.ai and ElevenLabs on your own keys. On OpenShorts Cloud the script and orchestration come out of your plan's minutes (the free plan included); plans run from $0 to $${CLOUD.highPrice}/month. Self-hosted, OpenShorts itself is free under MIT and you also bring a Gemini key.` },
+  { q: 'Is there a free AI UGC video generator?', a: `Not in the sense of free videos. On OpenShorts Cloud the research and the scripts run on the free plan, from its minutes, so you can get UGC scripts for nothing; the video itself (actor, lip-sync, voice, b-roll) is always billed by fal.ai and ElevenLabs on your own keys, about ${UGC.lowCost} a video in Low Cost mode. Paid Cloud plans start at $${STARTER.monthly.price}/month; self-hosted, OpenShorts is free under MIT and you pay only those providers and your own Gemini key.` },
   { q: 'Do I need my own API keys?', a: 'Yes, for the video. Generation always uses your fal.ai key (actor image, talking-head video, lip-sync, b-roll) and your ElevenLabs key (voice), on Cloud and self-hosted alike, and those providers bill you directly. On Cloud the Gemini part (research and scripts) and posting run on the managed keys; self-hosted, you supply a Gemini key too.' },
   { q: 'What do I need to give it?', a: `Either the product's website URL or a written description of up to ${UGC.descriptionChars} characters, or both (the description then adds context). With a URL, the page and up to ${UGC.subpages} subpages are read and the product is researched on the web before the scripts are written.` },
   { q: 'How long are the videos?', a: 'About 20 to 25 seconds, by design. Every script follows a fixed five-part structure (hook, problem, solution, demo, call to action), which is the length and shape of a typical short-form product ad.' },
@@ -472,7 +483,7 @@ const ugcGenerator = () => ({
     `The video generation runs on your own fal.ai and ElevenLabs keys: about ${UGC.lowCost} a video in Low Cost mode and about ${UGC.premium} in Premium, billed by those providers. On OpenShorts Cloud the scripts come out of your plan's minutes, the free plan included; self-hosted, OpenShorts is free under MIT and you add a Gemini key.`,
   ],
   body: `
-<h2>What the AI UGC video generator makes</h2>
+<h2>What AI UGC is, and what this generator makes</h2>
 <p>UGC, user-generated content, is the style of ad that looks like a person
 talking to their phone camera about something they use, rather than a produced
 commercial. It works on TikTok and Reels because it looks like the posts around
@@ -494,6 +505,9 @@ lip movement, cut with b-roll and captioned the way short-form video is.</p>
 <p>The result is a vertical 9:16 MP4 at 1080x1920, H.264 with AAC audio, with
 captions burned in a few words at a time, the way short-form viewers expect
 to read them. Each script also comes with a suggested caption for the post.</p>
+<p>Put another way, it is a UGC AI video generator for one format only: the
+short vertical ad. The AI UGC scripts are written first and shown as text, so you
+choose the angle before anything is generated or paid for.</p>
 
 ${stepsBlock('How to make an AI UGC video, in three steps', ugcSteps)}
 
