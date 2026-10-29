@@ -187,6 +187,11 @@ auto reframe page</a>, and the whole pipeline stage by stage on
 
 export const GUIDE_CHILDREN = [
   { path: '/how-to/clip-a-youtube-video', name: 'How to clip a YouTube video', blurb: 'Four free ways, from the Clip button to AI-cut vertical Shorts.' },
+  { path: '/how-to/make-youtube-shorts', name: 'How to make YouTube Shorts', blurb: 'The app camera, a vertical upload, or Shorts cut from your long videos.' },
+  { path: '/how-to/youtube-shorts-aspect-ratio', name: 'YouTube Shorts aspect ratio', blurb: '9:16 at 1080 x 1920, square allowed, up to 3 minutes, and the safe zones.' },
+  { path: '/how-to/instagram-reel-dimensions', name: 'Instagram Reel dimensions', blurb: '1080 x 1920, the 3:4 grid crop of the cover, safe zones and export settings.' },
+  { path: '/how-to/make-a-reel-on-facebook', name: 'How to make a Reel on Facebook', blurb: 'The app, Meta Business Suite, specs, and sharing Reels from Instagram.' },
+  { path: '/how-to/best-time-to-post-youtube-shorts', name: 'Best time to post YouTube Shorts', blurb: 'No universal answer: find your viewers\' hours in Analytics and test them.' },
   { path: '/how-openshorts-works', name: 'How OpenShorts works', blurb: 'The full pipeline, from the link to a captioned 9:16 clip.' },
   { path: '/self-hosted-ai-clip-maker', name: 'Self-host the clip maker', blurb: 'Docker setup, hardware, your own keys, and the real cost against credits.' },
   { path: '/n8n-youtube-shorts-automation', name: 'Automate Shorts with n8n', blurb: 'The importable workflow: channel in, approved Shorts out.' },
@@ -211,6 +216,7 @@ ${cardGrid(children)}
 <h2>Where to start</h2>
 <ul>
 <li><strong>New to clipping?</strong> <a href="/how-to/clip-a-youtube-video">How to clip a YouTube video</a> compares the free ways to do it by hand with letting the AI cut the Shorts.</li>
+<li><strong>Need the platform specs or steps?</strong> <a href="/how-to/youtube-shorts-aspect-ratio">YouTube Shorts aspect ratio</a> and <a href="/how-to/instagram-reel-dimensions">Instagram Reel dimensions</a> give the sizes and safe zones; <a href="/how-to/make-youtube-shorts">how to make YouTube Shorts</a> and <a href="/how-to/make-a-reel-on-facebook">how to make a Reel on Facebook</a> give the steps; <a href="/how-to/best-time-to-post-youtube-shorts">the best time to post Shorts</a> shows how to find yours.</li>
 <li><strong>Want to know what happens to your video?</strong> <a href="/how-openshorts-works">How OpenShorts works</a> walks through transcription, moment picking, reframing and captions.</li>
 <li><strong>Want it on your own machine?</strong> <a href="/self-hosted-ai-clip-maker">The self-hosting guide</a> covers Docker, hardware and keys. The code is MIT licensed.</li>
 <li><strong>Want it to run on its own?</strong> Start with <a href="/n8n-youtube-shorts-automation">the n8n workflow</a> for a channel, or <a href="/automate-shorts-api">the API</a> and <a href="/mcp">the MCP server</a> for your own code or agent.</li>

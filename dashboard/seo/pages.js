@@ -2820,6 +2820,11 @@ export function relatedFor(page, all) {
     '/how-to': 'Guides to clip a video, self-host OpenShorts and automate Shorts.',
     '/alternatives/choppity': 'Choppity reviewed: a free hour a month, hourly plans, the alternative.',
     '/alternatives/getmunch': 'GetMunch is now Munch Studio: what changed, prices, the alternative.',
+    '/how-to/instagram-reel-dimensions': '1080 x 1920 at 9:16, the grid crop of the cover, safe zones, export.',
+    '/how-to/youtube-shorts-aspect-ratio': '9:16 at 1080 x 1920, square allowed, up to 3 minutes, safe zones.',
+    '/how-to/make-a-reel-on-facebook': 'Phone and Meta Business Suite steps, specs, sharing from Instagram.',
+    '/how-to/make-youtube-shorts': 'The app camera, a vertical upload, or Shorts cut from long videos.',
+    '/how-to/best-time-to-post-youtube-shorts': 'No universal best time: read your Analytics, test slots, stay steady.',
   }
   const card = (p) => ({ path: p.path, title: p.h1, blurb: blurb[p.path] || p.description })
   // A page can name its own neighbours: the first three of its list that are
