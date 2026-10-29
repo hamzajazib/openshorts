@@ -397,6 +397,11 @@ const FOOTER_COLUMNS = [
   ['guides', [
     ['/how-to', 'All guides'],
     ['/how-to/clip-a-youtube-video', 'How to clip a YouTube video'],
+    ['/how-to/make-youtube-shorts', 'How to make YouTube Shorts'],
+    ['/how-to/youtube-shorts-aspect-ratio', 'YouTube Shorts aspect ratio'],
+    ['/how-to/instagram-reel-dimensions', 'Instagram Reel dimensions'],
+    ['/how-to/make-a-reel-on-facebook', 'How to make a Reel on Facebook'],
+    ['/how-to/best-time-to-post-youtube-shorts', 'Best time to post YouTube Shorts'],
     ['/how-openshorts-works', 'How it works'],
     ['/self-hosted-ai-clip-maker', 'Self-hosted AI clip maker'],
     ['/open-source-video-clipper', 'Open source video clipper'],

@@ -34,7 +34,7 @@ export const NAV_GROUPS = [
       { href: '/platforms/youtube', label: 'YouTube clip maker' },
       { href: '/platforms/youtube-shorts', label: 'YouTube Shorts maker' },
       { href: '/platforms/tiktok', label: 'TikTok clip maker' },
-      { href: '/platforms/instagram-reels', label: 'AI reel generator', sub: 'Instagram & Facebook' },
+      { href: '/platforms/instagram-reels', label: 'AI reels maker', sub: 'Instagram & Facebook' },
       { href: '/platforms/twitch', label: 'Twitch clip maker' },
       { href: '/platforms/kick', label: 'Kick clip maker' },
     ],
