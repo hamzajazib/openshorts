@@ -92,6 +92,19 @@ def amount_label(session_obj: dict) -> str:
     return f"${value}" if currency == "USD" else f"{value} {currency}"
 
 
+def cart_label(session_obj: dict) -> str:
+    """What was left in the cart, from the session's metadata: "the Starter
+    plan ($12.00)", "60 extra minutes ($9.00)", or "" when it cannot tell."""
+    md = session_obj.get("metadata") or {}
+    price = amount_label(session_obj)
+    suffix = f" ({price})" if price else ""
+    if md.get("kind") == "topup" and str(md.get("minutes") or "").isdigit():
+        return f"{md['minutes']} extra minutes{suffix}"
+    if md.get("plan"):
+        return f"the {md['plan'].capitalize()} plan{suffix}"
+    return f"your OpenShorts plan{suffix}" if price else ""
+
+
 async def claim(user_id, kind: str) -> bool:
     """Reserve the right to send ``kind`` to this account. True exactly once."""
     async with database.session() as s:
@@ -255,7 +268,7 @@ async def on_checkout_expired(session_obj: dict) -> bool:
     if not await claim(user.id, "checkout_recovery"):
         return False
     return await emails.send_checkout_recovery_email(
-        user.id, user.email, url, amount_label(session_obj))
+        user.id, user.email, url, cart_label(session_obj))
 
 
 async def _loop():

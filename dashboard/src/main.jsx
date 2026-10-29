@@ -8,6 +8,7 @@ import PricingPage from './components/PricingPage'
 import AccountPage from './components/AccountPage'
 import LoginModal from './components/LoginModal'
 import { readPendingPlan } from './lib/pendingPlan'
+import { track } from './lib/analytics'
 import { applyConsent } from './lib/consent'
 import CookieBanner from './components/CookieBanner'
 
@@ -35,7 +36,15 @@ function PricingView() {
   // A plan picked on the landing while signed out lands here: ask for the
   // sign-in straight away instead of a second click on the same plan.
   const [showLogin, setShowLogin] = useState(false);
-  useEffect(() => { window.scrollTo(0, 0); }, []);
+  // Back from Stripe without paying (cancel_url of a checkout opened here):
+  // straight to the plans, not the top of the page, and the query dropped so
+  // a reload does not count it twice.
+  useEffect(() => {
+    if (!window.location.hash.includes('checkout=cancel')) { window.scrollTo(0, 0); return; }
+    track('CheckoutCanceled', { props: { back_to: 'pricing' } });
+    try { window.history.replaceState(null, '', '#/pricing'); } catch (_) { /* ignore */ }
+    requestAnimationFrame(() => document.getElementById('pricing-plans')?.scrollIntoView());
+  }, []);
   useEffect(() => {
     if (!loading && !isSignedIn && readPendingPlan()) setShowLogin(true);
   }, [loading, isSignedIn]);

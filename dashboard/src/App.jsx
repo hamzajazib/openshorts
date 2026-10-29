@@ -969,6 +969,15 @@ function App() {
     return () => window.removeEventListener('hashchange', apply);
   }, []);
 
+  // #app?checkout=cancel: back from a Stripe checkout opened inside the app
+  // (cancel_url in cloud/billing.py), so the user lands on their clips again.
+  useEffect(() => {
+    const hash = window.location.hash || '';
+    if (!hash.startsWith('#app?') || new URLSearchParams(hash.slice(5)).get('checkout') !== 'cancel') return;
+    track('CheckoutCanceled', { props: { back_to: 'app' } });
+    try { window.history.replaceState(null, '', '#app'); } catch (_) { /* ignore */ }
+  }, []);
+
   // #app?login=1: the "Log in" link of the site nav (seo/nav.js). Opens the
   // sign-in dialog once the session is known (already signed in: just the
   // app), then drops the query so a reload does not reopen it.

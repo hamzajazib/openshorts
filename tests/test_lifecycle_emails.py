@@ -28,6 +28,20 @@ class TestAmountLabel:
         assert lifecycle.amount_label({"amount_total": 0, "currency": "usd"}) == ""
 
 
+class TestCartLabel:
+    def test_plan(self):
+        obj = {"amount_total": 1200, "currency": "usd", "metadata": {"kind": "subscription", "plan": "starter"}}
+        assert lifecycle.cart_label(obj) == "the Starter plan ($12.00)"
+
+    def test_topup(self):
+        obj = {"amount_total": 900, "currency": "usd", "metadata": {"kind": "topup", "minutes": "60"}}
+        assert lifecycle.cart_label(obj) == "60 extra minutes ($9.00)"
+
+    def test_old_session_without_plan(self):
+        assert lifecycle.cart_label({"amount_total": 1200, "currency": "usd"}) == "your OpenShorts plan ($12.00)"
+        assert lifecycle.cart_label({}) == ""
+
+
 class TestPromo:
     def test_unset(self, monkeypatch):
         monkeypatch.delenv("WINBACK_PROMO_CODE", raising=False)
@@ -59,8 +73,8 @@ def recovery(monkeypatch):
         state["claims"].add((user_id, kind))
         return True
 
-    async def _send(user_id, email, url, amount_label=""):
-        state["sent"].append((email, url, amount_label))
+    async def _send(user_id, email, url, cart_label=""):
+        state["sent"].append((email, url, cart_label))
         return True
 
     monkeypatch.setattr(lifecycle, "_recovery_target", _target)
@@ -72,7 +86,7 @@ def recovery(monkeypatch):
 class TestCheckoutRecovery:
     def test_sends_the_recovery_url_once(self, recovery):
         assert run(lifecycle.on_checkout_expired(_expired())) is True
-        assert recovery["sent"] == [("a@b.co", "https://checkout.stripe.com/r/x", "$12.00")]
+        assert recovery["sent"] == [("a@b.co", "https://checkout.stripe.com/r/x", "your OpenShorts plan ($12.00)")]
         # A second abandoned session does not mail again.
         assert run(lifecycle.on_checkout_expired(_expired())) is False
         assert len(recovery["sent"]) == 1

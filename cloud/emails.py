@@ -351,14 +351,15 @@ async def send_comeback_email(user_id, email: str, free_minutes: int) -> bool:
 
 
 async def send_checkout_recovery_email(user_id, email: str, recovery_url: str,
-                                       amount_label: str = "") -> bool:
+                                       cart_label: str = "") -> bool:
     """A Stripe Checkout expired unpaid. ``recovery_url`` reopens the same cart
-    (valid 30 days, Stripe's ``after_expiration.recovery``)."""
-    what = f"your OpenShorts plan ({amount_label})" if amount_label else "your OpenShorts plan"
+    (valid 30 days, Stripe's ``after_expiration.recovery``). ``cart_label`` is
+    ``lifecycle.cart_label``: "the Starter plan ($12.00)", "60 extra minutes"."""
+    what = cart_label or "your OpenShorts plan"
     html = f"""
       <div style="font-family:system-ui,sans-serif;max-width:480px;margin:0 auto">
         <h2>You didn't finish checking out</h2>
-        <p>You started upgrading to {what} but the payment wasn't completed.
+        <p>You started checking out {what} but the payment wasn't completed.
            Your cart is saved: one click takes you back to it.</p>
         {_cta(recovery_url, "Finish checkout")}
         <p style="color:#666;font-size:13px">Card declined? PayPal and other

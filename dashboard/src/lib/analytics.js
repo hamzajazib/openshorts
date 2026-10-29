@@ -18,6 +18,7 @@ import { firstTouchProps } from './attribution';
 //                          'wall' | 'upsell' | 'pricing' | 'watermark')
 //   - CheckoutRedirected — Stripe returned a URL and we are sending them there
 //   - CheckoutFailed     — /api/billing/checkout errored, `reason` says why
+//   - CheckoutCanceled   — back from Stripe unpaid (`back_to`: app | pricing)
 //   - PartialClipChosen  — the wall's "clip the first N min" taken instead of a
 //                          plan (`required` / `partial` minutes)
 //   - FirstVideoGrant    — free account's first video (<= 60 min) clipped whole

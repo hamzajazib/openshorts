@@ -3,6 +3,7 @@ import { Loader2, CreditCard, LogOut, Plus } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { apiJson } from '../lib/api';
 import { track } from '../lib/analytics';
+import { useBackFromStripe } from '../lib/backFromStripe';
 import ApiKeysCard from './ApiKeysCard';
 import McpConnectCard from './McpConnectCard';
 import DeleteAccountCard from './DeleteAccountCard';
@@ -116,14 +117,22 @@ export default function AccountPage() {
 
   const buyTopup = useCallback(async (price_id) => {
     setBusy(true);
+    const props = { kind: 'topup', source: 'account_topup' };
+    track('CheckoutStarted', { props });
     try {
       const { url } = await apiJson('/api/billing/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ price_id }),
+        body: JSON.stringify({ price_id, source: props.source }),
       });
+      track('CheckoutRedirected', { props });
       window.location.href = url;
-    } catch (e) { setBusy(false); alert(e?.detail || 'Could not start checkout.'); }
+    } catch (e) {
+      track('CheckoutFailed', { props: { ...props, reason: String(e?.detail || e?.message || 'unknown').slice(0, 120) } });
+      setBusy(false);
+      alert(e?.detail || 'Could not start checkout.');
+    }
   }, []);
+  useBackFromStripe(() => setBusy(false));
 
   if (!me) return <div className="flex justify-center py-16"><Loader2 className="animate-spin text-brass" /></div>;
 

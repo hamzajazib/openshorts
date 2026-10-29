@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Loader2, Check, Zap, Clock } from 'lucide-react';
 import { apiJson } from '../lib/api';
 import { track } from '../lib/analytics';
+import { useBackFromStripe } from '../lib/backFromStripe';
 import Modal from './ui/Modal';
 
 // Opens when a job hits a 402 (quota exceeded). This is the highest-intent
@@ -56,6 +57,7 @@ export default function TopUpModal({ onClose, required, remaining, partialMinute
   const [topups, setTopups] = useState([]);
   const [showTopups, setShowTopups] = useState(false);
   const [busyPrice, setBusyPrice] = useState(null);
+  useBackFromStripe(() => setBusyPrice(null));
   const isUpsell = context === 'upsell';
   const source = sourceOverride || (isUpsell ? 'upsell' : 'wall');
 
@@ -102,7 +104,7 @@ export default function TopUpModal({ onClose, required, remaining, partialMinute
     try {
       const { url } = await apiJson('/api/billing/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ price_id: entry.price_id }),
+        body: JSON.stringify({ price_id: entry.price_id, source }),
       });
       track('CheckoutRedirected', { props });
       window.location.href = url;

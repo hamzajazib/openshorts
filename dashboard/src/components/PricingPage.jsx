@@ -41,23 +41,17 @@ const HOSTED_VS_SELF = [
   },
 ];
 
-// Billing / value questions reused verbatim from Landing.jsx faqs
+// Billing / value questions reused verbatim from Landing.jsx faqs, minus the
+// two that called the product free with no limits: this page is where every
+// cancelled checkout lands, right under the paid plans.
 const FAQS = [
   {
     question: "Is OpenShorts really free? What's the catch?",
     answer: "There is no catch, but there are two different things on offer. (1) Self-hosted is 100% free and open source: you run it with Docker on your own machine, bring your own API keys, and there are no watermarks, no usage limits and no subscription. What it costs you is hardware and time. On a typical CPU an 8-minute video takes 5 to 8 minutes to process, and you need your own Google Gemini key (required, free tier is 1,500 requests/day), plus ElevenLabs for dubbing and fal.ai for AI Shorts if you want those. (2) Hosted at openshorts.app is the same software with the running costs covered: our NVIDIA GPU clips that same 8-minute video in about 50 seconds, the Gemini key is included so there is nothing to create or paste, auto-posting to TikTok, Instagram and YouTube is already wired up, and your clips are stored and re-openable from any browser. It has a free plan (20 minutes a month, watermark, no credit card) and paid plans from $12/mo for 100 minutes without watermark. So: free if you are happy to run it yourself, paid if you would rather it just ran fast. Both are far cheaper than Opus Clip ($15-228/month) or Kapwing ($24-79/month)."
   },
   {
-    question: "How does OpenShorts compare to Opus Clip?",
-    answer: "OpenShorts is a free, self-hosted alternative to Opus Clip. Both offer AI viral moment detection and smart vertical cropping. Key differences: OpenShorts is completely free vs Opus Clip's $15-228/month pricing. OpenShorts runs on your infrastructure (full data privacy) vs cloud-only. OpenShorts uses Google Gemini 3.1 Flash-Lite for AI analysis vs Opus Clip's proprietary model. OpenShorts adds AI voice dubbing in 30+ languages, AI-generated video effects, and hook text overlays. The trade-off is that OpenShorts requires Docker self-hosting, while Opus Clip is a ready-to-use cloud service."
-  },
-  {
     question: "Can OpenShorts generate YouTube thumbnails and titles for free?",
     answer: "Yes. OpenShorts includes a free AI YouTube thumbnail generator, a free AI YouTube title generator, and a free AI YouTube description generator — all powered by Google Gemini 3.1 Flash-Lite. Upload your video and the AI suggests 10 viral title options with an interactive refinement chat. Then it generates multiple thumbnail designs using AI image generation — upload a face photo and background image for personalized results. The studio also auto-generates YouTube descriptions with chapter timestamps and lets you publish directly to YouTube. Self-hosted, it all runs on your own Gemini key (the free tier works). On OpenShorts Cloud, titles and descriptions work on every plan and thumbnail images need a paid plan, from $12/month."
-  },
-  {
-    question: "Is there a free open source clip generator?",
-    answer: "Yes — OpenShorts is a 100% free, open source clip generator. Unlike paid clip generators like Opus Clip ($15-228/month) or Kapwing ($24-79/month), OpenShorts lets you generate unlimited clips with no watermarks, no usage limits, and no subscription fees. It also includes a free AI YouTube thumbnail generator, free AI YouTube title generator, and free AI YouTube description generator — features that other clip generators charge extra for. You self-host it with Docker on your own machine for full privacy and control."
   },
   {
     question: "How much does it cost to generate an AI UGC video?",

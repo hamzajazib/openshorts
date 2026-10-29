@@ -86,7 +86,10 @@ balance, `reserve_process_minutes` decides on its own (the client sends no
 Welcome (minutes after sign-up), first-clip nudge (24-72 h, nothing processed),
 win-back (2-7 days after the first committed video, no plan; with
 `WINBACK_PROMO_CODE` when set) and checkout recovery (`checkout.session.expired`
-with the `after_expiration.recovery` URL that `create_checkout` enables). Each at
+with the `after_expiration.recovery` URL that `create_checkout` enables; sessions
+expire after `CHECKOUT_EXPIRES_SECONDS` (1 h) instead of Stripe's 24 h so the
+email goes out while the intent is fresh, and it names the plan or pack from the
+session metadata, `lifecycle.cart_label`). Each at
 most once per account: a `lifecycle_emails` row is claimed before the send
 (unique `user_id, kind`). The loop sends at most `BATCH` per 10-minute tick. All
 four are commercial: `emails.send_commercial_email` skips `marketing_opt_out`
@@ -185,3 +188,17 @@ free text: anything typed would land in a row designed to outlive the user.
 `_apply_topup` reads the user id from Stripe metadata, so it confirms the row
 still exists before inserting; otherwise the FK violation makes Stripe retry the
 same doomed event for days.
+
+## Checkout session (`create_checkout`)
+
+- The client sends the surface that opened it as `source` (`wall`, `watermark`,
+  `meter`, `plan_choice`, `account_topup`, `pricing_email_*`…). It is stored in the
+  session metadata with `plan`, and decides the `cancel_url`: `#/pricing?checkout=cancel`
+  for pricing-page clicks (the page scrolls to the plans), `#app?checkout=cancel`
+  for everything opened inside the app. Both emit `CheckoutCanceled`.
+- `allow_promotion_codes` only for someone who was handed a code: the win-back
+  email (`source` `pricing_email_winback`, or a `winback` row in `lifecycle_emails`).
+- The terms checkbox stays (`consent_collection`, art. 16(m) request for immediate
+  performance) with a one-sentence `CONSENT_MESSAGE`.
+- Checkout buttons reset their spinner on a back/forward-cache restore
+  (`lib/backFromStripe.js`); without it every plan stayed disabled after Back.

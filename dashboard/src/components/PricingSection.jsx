@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { apiJson } from '../lib/api';
 import { track } from '../lib/analytics';
 import { stashPendingPlan, readPendingPlan, clearPendingPlan } from '../lib/pendingPlan';
+import { useBackFromStripe } from '../lib/backFromStripe';
 import SegmentedControl from './ui/SegmentedControl';
 
 const PLAN_ORDER = ['starter', 'creator', 'pro'];
@@ -33,6 +34,7 @@ export default function PricingSection({ onRequireLogin }) {
   const [interval, setInterval] = useState('month');
   const [loading, setLoading] = useState(true);
   const [busyPrice, setBusyPrice] = useState(null);
+  useBackFromStripe(() => setBusyPrice(null));
   // One automatic checkout per page load (resumed plan or ?plan= link).
   const autoCheckoutRef = useRef(false);
 
@@ -67,7 +69,7 @@ export default function PricingSection({ onRequireLogin }) {
       const { url } = await apiJson('/api/billing/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ price_id: entry.price_id }),
+        body: JSON.stringify({ price_id: entry.price_id, source: props.source }),
       });
       track('CheckoutRedirected', { props });
       window.location.href = url;
