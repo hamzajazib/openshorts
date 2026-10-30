@@ -1,6 +1,13 @@
 # OpenShorts.app
 
-Open source AI clip generator: turn long videos into viral 9:16 Shorts, TikToks and Reels. A self-hostable Opus Clip alternative (MIT).
+**The open-source OpusClip alternative.** Turn long videos into viral 9:16 Shorts, TikToks and Reels. Self-host free (MIT) or use the hosted cloud.
+
+| | OpenShorts | OpusClip | Vizard | Klap |
+|---|---|---|---|---|
+| Open source | Yes (MIT) | No | No | No |
+| Self-hostable | Yes (Docker) | No | No | No |
+| Free without watermark | Yes, self-hosted | No | No | No |
+| API + MCP server | Yes | API | API | API |
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Open Source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://opensource.org/)
