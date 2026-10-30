@@ -84,12 +84,12 @@ export const NAV_GROUPS = [
   },
 ]
 
-/* Pricing is the static /pricing page (seo/pricing-page.js); the homepage
- * still has its plan table at #pricing. The plan picker and checkout stay at
- * the hash route #/pricing?plan=..., a different thing: nginx sends
- * /pricing?plan=... there. */
+/* The nav's Pricing scrolls to the plan table on the homepage (#pricing in
+ * Landing.jsx). The static /pricing page (seo/pricing-page.js) is linked from
+ * the footers only. The plan picker and checkout stay at the hash route
+ * #/pricing?plan=..., a different thing: nginx sends /pricing?plan=... there. */
 export const NAV_LINKS = [
-  { href: '/pricing', label: { en: 'Pricing', es: 'Precios' } },
+  { href: '/#pricing', label: { en: 'Pricing', es: 'Precios' } },
   { href: '/self-hosted-ai-clip-maker', label: { en: 'Open source', es: 'Código abierto' } },
 ]
 
