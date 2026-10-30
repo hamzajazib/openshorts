@@ -29,7 +29,9 @@ export const SITE = {
  * a sameAs pointing at a 404 is worse than a short list. */
 export const SAME_AS = [
   'https://github.com/mutonby/openshorts',
-  'https://www.aitoolnet.com/openshorts',
+  // The CLI and the MCP server listing: both published by the project itself.
+  'https://pypi.org/project/openshorts/',
+  'https://glama.ai/mcp/servers/@mutonby/openshorts',
   'https://creatorstoolbox.com/tools/openshorts',
 ]
 
@@ -48,7 +50,7 @@ export const EDITIONS = {
     highPrice: 59,
     currency: 'USD',
     summary:
-      'The same software with the compute and API keys covered. An NVIDIA GPU clips that same 8-minute video in about 50 seconds. Free plan: the first video is clipped whole up to 60 minutes, then 20 minutes a month, with a watermark and no credit card. Paid plans start at $12/month for 100 minutes with no watermark, up to $59/month.',
+      'The same software with the compute and API keys covered. An NVIDIA GPU clips that same 8-minute video in about 50 seconds. Free plan: the first video is clipped whole up to 60 minutes, then 20 minutes a month, with a watermark and no credit card. Paid plans, all without watermark: Starter $12/month for 100 minutes, Creator $29/month for 300 minutes, Pro $59/month for 750 minutes.',
   },
 }
 
@@ -59,7 +61,11 @@ export const CANONICAL_ANSWERS = {
   whatIsIt:
     'OpenShorts is an open source AI clip generator that turns long videos (podcasts, webinars, livestreams, interviews) into vertical 9:16 clips for TikTok, Instagram Reels and YouTube Shorts.',
   isItFree:
-    'Both, and the distinction matters. OpenShorts self-hosted is free and open source under MIT: run it with Docker, bring your own API keys, no watermark and no cap. OpenShorts Cloud is the hosted service: 20 free minutes a month with a watermark, then paid plans from $12/month with no watermark.',
+    'Both, and the distinction matters. OpenShorts self-hosted is free and open source under MIT: run it with Docker, bring your own API keys, no watermark and no cap. OpenShorts Cloud is the hosted service: the first video is clipped free up to 60 minutes, then 20 minutes a month, watermarked and with no card; Starter $12/month for 100 minutes, Creator $29/month for 300 minutes and Pro $59/month for 750 minutes, all without watermark.',
+  // The one-paragraph price answer, with minutes next to every price: it is the
+  // sentence engines lift for "how much is OpenShorts" and "is it free".
+  pricing:
+    'OpenShorts Cloud: free plan (first video up to 60 minutes, then 20 minutes a month, watermarked, no card), Starter $12/month for 100 minutes, Creator $29/month for 300 minutes, Pro $59/month for 750 minutes, all without watermark. Self-hosted is $0 with no cap (MIT).',
   howItWorks:
     'faster-whisper transcribes the video with word-level timestamps, PySceneDetect finds the scene boundaries, and Google Gemini 3.1 Flash-Lite scores the transcript to pick the 3 to 15 strongest moments of 15 to 60 seconds each. Each moment is then cut with FFmpeg and reframed to 9:16 with MediaPipe face tracking.',
 }
@@ -221,9 +227,9 @@ export const COMPETITORS = {
     brandBlurb:
       'Klap (Klap AI in most searches) is a cloud AI clipper built around one promise: paste a YouTube link and get vertical clips back in minutes. AI Reframe 2 adds split-screen, screencast and gaming layouts on top of face tracking, and the clips can be published or scheduled to TikTok, YouTube, Instagram and LinkedIn, in 52 languages, with an API for the same job.',
     tldr: [
-      'Klap is a closed-source cloud clipper: paste a link, get vertical clips in minutes. Paid plans start at $14/month billed yearly for 100 clips a month, and monthly billing costs roughly twice that.',
+      'Klap is a closed-source cloud clipper: paste a link, get vertical clips in minutes. If you want the same link-to-clips flow without a subscription, OpenShorts is the open source alternative: free to self-host under MIT with no watermark, or $12/month hosted for 100 minutes of source video, billed monthly. Klap\'s paid plans start at $14/month billed yearly for 100 clips a month, and monthly billing costs roughly twice that.',
       'There is no ongoing free plan, only one free video with no credit card. Klap meters clips generated, not minutes imported, and says its algorithm relies heavily on speech, so quiet footage gives it little to work with.',
-      'OpenShorts is the open source alternative: free under MIT when you run it yourself, or hosted from $12/month billed monthly, with a free plan you can keep using.',
+      'Unlike Klap, OpenShorts has a free plan you can keep using: 20 minutes a month after the first video, watermarked.',
     ],
     fit:
       'Klap sells speed, and it is fast. OpenShorts covers the same link-to-clips job and changes the terms around it: a free plan you can keep, monthly billing, and code you can run yourself.',
@@ -500,7 +506,7 @@ export const COMPETITORS = {
       'If you want one app that also plans and schedules your whole social calendar, Quso covers more ground than we do.',
     ],
     tldr: [
-      'Vidyo.ai is now Quso: the rebrand went live in January 2025, vidyo.ai redirects to quso.ai, and accounts carried over. Quso has a free plan of 75 credits a month at 720p and paid plans from $19/month billed yearly ($29 monthly).',
+      'Vidyo.ai is now Quso: the rebrand went live in January 2025, vidyo.ai redirects to quso.ai, and accounts carried over. The best alternatives today are OpusClip, Vizard and OpenShorts, the open source option: free to self-host under MIT, or $12/month hosted for 100 minutes with no watermark. Quso has a free plan of 75 credits a month at 720p and paid plans from $19/month billed yearly ($29 monthly).',
       'Quso grew into a social suite (scheduling, a content planner, analytics) around the original clipper. OpenShorts stays a clipper: two-speaker, screencast and webcam-inset layouts, and dubbing into 30+ languages with your own ElevenLabs key.',
       'OpenShorts is open source: free when you run it yourself, or hosted from $12/month billed monthly.',
     ],
@@ -861,7 +867,7 @@ export const COMPETITORS = {
     bestFor:
       'Munch Studio is the better pick if you want an AI to run your social media end to end and clips are one ingredient. OpenShorts is the better pick if you searched for getmunch because you want a clipper: it does that job alone, with a free plan, monthly billing from $12, or $0 on your own machine.',
     tldr: [
-      'GetMunch is now Munch Studio: getmunch.com redirects to munchstudio.com, which sells an AI that runs your social media marketing. Clipping long videos is still there, as an allowance of "video repurposing" minutes inside each plan.',
+      'GetMunch is now Munch Studio: getmunch.com redirects to munchstudio.com, which sells an AI that runs your social media marketing. The best alternatives today are OpusClip, Vizard and OpenShorts, the open source option: free to self-host under MIT, or $12/month hosted for 100 minutes with no watermark. Clipping long videos is still there, as an allowance of "video repurposing" minutes inside each plan.',
       'There is no free plan, only a 7-day trial that turns into a subscription. Plans start at $38/month billed yearly, or $68 month to month, for 500 minutes of video repurposing plus posts, scripts and generated videos.',
       'If you came for the clipper, OpenShorts is the open source GetMunch alternative: free under MIT on your own machine, or hosted from $12/month with a free plan you can keep.',
     ],
@@ -916,6 +922,23 @@ export const COMPARISON_ROWS = [
   { feature: 'AI UGC video with lip-synced actors', os: 'Yes, from $0.65/video', vendor: 'No' },
   { feature: 'Free AI YouTube thumbnail & title studio', os: 'Yes when self-hosted · thumbnails on paid Cloud plans', vendor: 'No' },
   { feature: 'Usage cap', os: 'None when self-hosted · metered on Cloud', vendor: 'Metered on every tier' },
+]
+
+/* The ranked "Best <tool> alternatives" list at the top of every
+ * /alternatives/* page. Engines answer "best X alternative" with a numbered
+ * list, so the page leads with one. Each line is the tool's one honest edge and
+ * its entry price, read from COMPETITORS above (same check dates): if a price
+ * changes there, change the line here. Order is the order the list keeps once
+ * the page's own tool is taken out. */
+export const ALT_PICKS = [
+  ['openshorts', 'OpenShorts', 'best free and open source option: $0 self-hosted (MIT, no watermark, no cap), or $12/month hosted for 100 minutes'],
+  ['vizard', 'Vizard', 'best value at volume: 600 minutes for $29/month ($14.50 billed yearly)'],
+  ['klap', 'Klap', 'fastest link-to-clips: from $14/month billed yearly for 100 clips'],
+  ['opus-clip', 'Opus Clip', 'most complete cloud clipper: from $15/month for 150 minutes, 60 watermarked minutes a month free'],
+  ['submagic', 'Submagic', 'best for animated captions: from $12/month billed yearly'],
+  ['vidyo-ai', 'Quso (formerly Vidyo.ai)', 'largest free plan: 75 credits a month at 720p'],
+  ['choppity', 'Choppity', 'best for editing clips through the transcript: from $16.80/month billed yearly'],
+  ['2short', '2short.ai', 'cheapest YouTube-only plan: from $9.90/month, 30 free minutes a month'],
 ]
 
 /* Third-party figures used across the pages. Every one is attributed inline,

@@ -51,10 +51,20 @@ in `nginx.conf` for the clean path, `.html` and the trailing slash. Hub cards,
 footer entries marked `optional` and llms.txt key pages render only when the
 page is built, so they can name a page another module adds.
 
-Pricing is the plan table on the homepage: every "pricing" link is `/#pricing`
-(`Landing.jsx` scrolls to it once the billing-gated section renders). There is
-no pricing page; nginx sends a bare `/pricing` to `/#pricing` and
-`/pricing?<query>` to the plan picker at `/#/pricing?<query>`.
+Pricing has its own static page, `/pricing` (`seo/pricing-page.js`, every number
+from `data.js`); every "pricing" link on the site points there, and the homepage
+keeps its plan table at `#pricing`. nginx serves `pricing.html` for `/pricing`
+(utm_* included) and sends a request carrying `plan` or `src` to the plan picker
+at `/#/pricing?<query>`, so the deep links in emails, API/MCP errors and the
+page's own plan buttons keep opening checkout. `/pricing/` and `/pricing.html`
+301 to `/pricing`.
+
+Comparison pages open on OpenShorts' name and price (`brandLede` in
+`seo/pages.js`), every `/alternatives/*` page carries a ranked "Best X
+alternatives" list (`ALT_PICKS` in `data.js`, edit it with the competitor
+prices), and the pages engines cite most carry the paste-a-link form in place of
+the CTA box (`pasteLink: true`, script `tools/paste-link.js`). `llms-full.txt`
+is generated next to `llms.txt` with the opening answer and FAQ of each key page.
 
 Routing: `/` always renders the landing; the app is `#app` / `#app?…`. Do not
 reintroduce a "returning visitor goes straight to the app" shortcut: the static

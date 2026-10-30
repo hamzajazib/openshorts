@@ -44,7 +44,7 @@ if (!CLOUD.summary.includes(`up to ${FIRST_VIDEO_MINUTES} minutes`)) {
     `${FIRST_VIDEO_MINUTES} minutes; update FIRST_VIDEO_MINUTES in seo/product-pages.js`)
 }
 
-const PRICING = '/#pricing'
+const PRICING = '/pricing'
 
 /* Thumbnail Studio limits (cloud/config.py, thumbnail.py, app.py). */
 const THUMB = {
@@ -469,8 +469,7 @@ const ugcGenerator = () => ({
   h1: 'AI UGC video generator: product ads with lip-synced AI actors',
   breadcrumb: [{ name: 'AI UGC video generator' }],
   relatedTitle: 'Related tools',
-  related: ['/platforms/tiktok', '/platforms/instagram-reels', THUMB_PATH,
-    '/tiktok-clip-maker', '/ai-reel-generator'],
+  related: ['/alternatives/arcads', '/platforms/tiktok', '/platforms/instagram-reels', THUMB_PATH],
   cta: {
     label: 'AI Shorts',
     title: 'A product link in, a UGC-style ad out',
@@ -633,14 +632,15 @@ audience that can usually tell anyway.</p>
 <li><strong>The public gallery is opt-in.</strong> A checkbox lets you share a finished video in the OpenShorts gallery; when ticked, the video, the product name and the script are public. It is off unless you tick it.</li>
 </ul>
 
-<h2>Compared with avatar video subscriptions</h2>
+<h2>Compared with avatar video subscriptions (Arcads, SendShort)</h2>
 <p>Most AI avatar video tools sell a monthly subscription with a quota of videos
 or minutes. SendShort, for example, includes AI avatar videos from its
 Professional plan, ${esc(SENDSHORT_PRO)} (checked ${esc(longDate(SENDSHORT.checked))}). OpenShorts works the other way
 round: the code is open source, there is no avatar quota, and you pay the
 generation providers per video on your own keys, so a month with two ads costs
 two ads. The trade-off is setup: two provider accounts and keys instead of one
-subscription, and a narrower product, built only for short vertical product ads.</p>
+subscription, and a narrower product, built only for short vertical product ads.
+Weighing it against Arcads specifically? See <a href="/alternatives/arcads">the Arcads alternative</a>.</p>
 
 <h2>What it does not do</h2>
 <ul>
@@ -682,6 +682,93 @@ ${sources([
   ],
 })
 
+/* ------------------------------------------------------------------------ */
+/* /alternatives/arcads                                                      */
+/* ------------------------------------------------------------------------ */
+
+/* Arcads, read on arcads.ai and its help centre on ARCADS.checked. It publishes
+ * no plan prices on its site (they are shown inside the app), so this page
+ * states what it does publish and never invents a dollar figure for it. */
+const ARCADS = {
+  name: 'Arcads',
+  checked: '2026-10-30',
+  plans: 'Starter (8,000 credits a month), Creator (16,000 credits a month), then Pro, Scale and Business',
+  trial: '72 hours with 1,000 generation credits; a card is required at sign-up and the trial rolls into the Starter plan unless cancelled',
+}
+const ARCADS_PATH = '/alternatives/arcads'
+
+const arcadsFaq = [
+  { q: 'What is a cheaper alternative to Arcads?', a: `OpenShorts AI Shorts, if you would rather pay per video than per month: about ${UGC.lowCost} a video in Low Cost mode (about ${UGC.premium} in Premium), billed by fal.ai and ElevenLabs on your own keys, with no avatar quota. OpenShorts itself is free to self-host under MIT, or from $${STARTER.monthly.price}/month hosted.` },
+  { q: 'How much does Arcads cost?', a: `Arcads does not publish its prices on its website (checked ${longDate(ARCADS.checked)}). Its help centre names the plans: ${ARCADS.plans}. The free trial is ${ARCADS.trial}.` },
+  { q: 'Is there a free Arcads alternative?', a: `Not for the video itself: lip-synced AI actors cost compute on every tool. With OpenShorts the scripts and product research run on the free plan, and the video is billed per piece by fal.ai and ElevenLabs on your keys, about ${UGC.lowCost} in Low Cost mode. Self-hosted, OpenShorts is free under MIT and you add a Gemini key.` },
+  { q: 'What does OpenShorts AI Shorts make?', a: 'A 20 to 25 second vertical UGC-style ad from a product URL or description: hook, problem, solution, demo and call to action, said by a lip-synced AI actor, with two b-roll inserts and burned-in captions, as a 1080x1920 MP4. English and Spanish.' },
+  { q: 'Where is Arcads better?', a: 'It is a dedicated UGC ad product with one subscription and no API keys to manage, a larger actor library, and more ad formats and workflows than a single 20-second structure. OpenShorts AI Shorts is narrower: one ad format, your own provider keys, open source code.' },
+]
+
+const arcadsAlternative = () => ({
+  path: ARCADS_PATH,
+  published: '2026-10-30',
+  updated: '2026-10-30',
+  title: 'Arcads Alternative: AI UGC Ads From ~$0.65 a Video',
+  description: `An open source alternative to Arcads: product URL in, 20-25 s UGC ad with a lip-synced AI actor out, about ${UGC.lowCost} a video on your own keys.`,
+  h1: 'A pay-per-video alternative to Arcads for AI UGC ads',
+  lede: `The cheaper-to-start alternative to Arcads is OpenShorts AI Shorts: it turns a product URL into a 20 to 25 second UGC-style ad with a lip-synced AI actor, b-roll and captions for about ${UGC.lowCost} a video in Low Cost mode (about ${UGC.premium} in Premium), billed by fal.ai and ElevenLabs on your own keys. OpenShorts itself is free to self-host under MIT, or from $${STARTER.monthly.price}/month hosted. <span class="checked">Checked ${esc(longDate(ARCADS.checked))}</span> Arcads terms read on arcads.ai and its help centre.`,
+  breadcrumb: [{ name: 'Alternatives', path: '/alternatives' }, { name: 'Arcads' }],
+  relatedTitle: 'Related tools',
+  related: [UGC_PATH, '/alternatives/sendshort', '/platforms/tiktok', '/alternatives'],
+  cta: {
+    label: 'AI Shorts',
+    title: 'A product link in, a UGC-style ad out',
+    body: `Open AI Shorts in the app and add your fal.ai and ElevenLabs keys: about ${UGC.lowCost} a video billed by them. Paid plans from $${STARTER.monthly.price}/month; self-host free under MIT.`,
+    button: 'Make a UGC video',
+    href: `${SITE.url}/#app?tab=saasshorts`,
+  },
+  facts: [
+    { k: 'OpenShorts per video', v: `~${UGC.lowCost}`, s: `Low Cost mode; ~${UGC.premium} Premium, on your keys` },
+    { k: 'Arcads pricing', v: 'In the app', s: 'Not published on arcads.ai' },
+    { k: 'Arcads trial', v: '72 hours', s: '1,000 credits, card required' },
+    { k: 'Open source', v: 'OpenShorts', s: 'MIT; Arcads is closed' },
+  ],
+  tldr: [
+    `Arcads is a closed-source subscription for AI UGC ads with AI actors. It does not publish its prices on its website; its help centre lists ${ARCADS.plans}, and a ${ARCADS.trial}.`,
+    `OpenShorts AI Shorts does one format of the same job (a 20 to 25 second product ad with a lip-synced AI actor) and bills it per video on your own fal.ai and ElevenLabs keys: about ${UGC.lowCost} in Low Cost mode, so two ads in a month cost two ads, not a plan.`,
+  ],
+  body: `
+<h2>Arcads vs OpenShorts AI Shorts</h2>
+<table>
+<thead><tr><th></th><th>OpenShorts AI Shorts</th><th>Arcads</th></tr></thead>
+<tbody>
+<tr><td>Price</td><td class="os">About ${UGC.lowCost} a video (Low Cost) or ${UGC.premium} (Premium), paid to fal.ai and ElevenLabs; OpenShorts $0 self-hosted or from $${STARTER.monthly.price}/month hosted</td><td>Subscription in credits; prices shown in the app, not on arcads.ai</td></tr>
+<tr><td>Trial</td><td class="os">Free plan, no card: scripts and research run on its minutes</td><td>${esc(ARCADS.trial)}</td></tr>
+<tr><td>Input</td><td class="os">Product URL (page + up to ${UGC.subpages} subpages) or a description</td><td>Script, product and actor chosen in the app</td></tr>
+<tr><td>Output</td><td class="os">20-25 s vertical MP4, 1080x1920, lip-synced actor, 2 b-roll inserts, captions</td><td>UGC-style ads with AI actors in several formats</td></tr>
+<tr><td>Your own face</td><td class="os">Yes, from a photo (with consent)</td><td>See arcads.ai</td></tr>
+<tr><td>Open source</td><td class="os">Yes, MIT</td><td>No</td></tr>
+</tbody>
+</table>
+
+<h2>How AI Shorts makes an ad</h2>
+${ugcSteps.map(([n, text], i) => `<h3>${i + 1}. ${esc(n)}</h3>\n<p>${esc(text)}</p>`).join('\n')}
+<p>The full walkthrough, the formats and the limits are on the
+<a href="${UGC_PATH}">AI UGC video generator</a> page.</p>
+
+<h2>When Arcads is the better choice</h2>
+<ul>
+<li>You want one subscription and no provider accounts or API keys to manage.</li>
+<li>You need more than one ad format, or a larger library of actors.</li>
+<li>Your team produces ads at a volume where a credit plan is simpler to budget than per-video provider bills.</li>
+</ul>
+
+${faqBlock(arcadsFaq)}
+
+${sources([
+  `Arcads plans and free trial: help.arcads.ai ("How to buy more credits", "How the free trial works"), checked ${esc(longDate(ARCADS.checked))}. arcads.ai showed no public price list on that date.`,
+  `OpenShorts AI Shorts estimates: <code>dashboard/src/components/SaaShortsTab.jsx</code>, ${esc(CHECKED)}. Source: <a href="${SITE.repo}" rel="noopener">github.com/mutonby/openshorts</a>.`,
+])}
+`,
+  faq: arcadsFaq,
+})
+
 export function productPages() {
-  return [thumbnailMaker(), ugcGenerator()]
+  return [thumbnailMaker(), ugcGenerator(), arcadsAlternative()]
 }

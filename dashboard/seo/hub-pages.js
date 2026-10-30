@@ -28,7 +28,7 @@ if (!CLOUD.summary.includes(`up to ${FIRST_VIDEO_MINUTES} minutes`)) {
 const PRICE_LINE =
   `OpenShorts Cloud clips your first video free up to ${FIRST_VIDEO_MINUTES} minutes, then ${CLOUD.freeMinutes} minutes a month, ` +
   `with a watermark and no credit card; paid plans start at $${CLOUD.lowPrice}/month with no watermark ` +
-  '(<a href="/#pricing">all plans</a>). The self-hosted edition is free under MIT.'
+  '(<a href="/pricing">all plans</a>). The self-hosted edition is free under MIT.'
 
 /* Cards for the entries that exist in `built` (path -> page), in list order. */
 const cardsFor = (entries, built) => entries.filter((e) => built.has(e.path))

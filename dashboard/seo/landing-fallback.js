@@ -243,7 +243,7 @@ ${NAV_SCRIPT}
     <a style="${S.a}" href="/auto-reframe">Auto reframe</a> &middot;
     <a style="${S.a}" href="/use-cases/sermons">Sermon clip maker</a> &middot;
     <a style="${S.a}" href="/how-to/clip-a-youtube-video">How to clip a YouTube video</a> &middot;
-    <a style="${S.a}" href="/#pricing">Pricing</a> &middot;
+    <a style="${S.a}" href="/pricing">Pricing</a> &middot;
     <a style="${S.a}" href="/open-source-video-clipper">Open source video clipper</a> &middot;
     <a style="${S.a}" href="/self-hosted-ai-clip-maker">Self-hosted AI clip maker</a> &middot;
     <a style="${S.a}" href="/open-source-ai-video-generator">Open source AI video generator</a> &middot;

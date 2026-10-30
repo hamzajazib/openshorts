@@ -11,8 +11,8 @@
  * attributed statistics, a visible byline and a visible date.
  */
 
-import { SITE, SAME_AS } from './data.js'
-import { COMPONENTS_CSS, factTiles } from './components.js'
+import { SITE, SAME_AS, EDITIONS } from './data.js'
+import { COMPONENTS_CSS, factTiles, pasteLinkWidget } from './components.js'
 import { renderNav, NAV_CSS, NAV_SCRIPT } from './nav.js'
 
 const esc = (s) =>
@@ -104,6 +104,10 @@ td.os{color:var(--ink)}
 .cta-box p{margin:0;font-size:.9rem;color:var(--muted)}
 .cta-box .btn{background:var(--brass);color:oklch(17% 0.03 50);padding:.65rem 1.2rem;
   border-radius:8px;font-size:.9rem;font-weight:500;text-decoration:none;white-space:nowrap}
+.cta-act{display:flex;flex-direction:column;align-items:flex-start;gap:.35rem}
+.cta-micro{font-size:.72rem;color:var(--muted);max-width:18rem;line-height:1.4}
+.best-alts ol{margin:0 0 .4rem}
+.plans .btn-primary{display:inline-block;text-decoration:none;white-space:nowrap}
 .cta-box .btn:hover{color:oklch(17% 0.03 50);filter:brightness(1.06)}
 .lede{font-size:1.05rem;color:var(--ink2);max-width:44rem;margin:0 0 1.5rem}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -413,7 +417,7 @@ const FOOTER_COLUMNS = [
 
 const FOOTER_PRODUCT = [
   [`${SITE.url}/`, 'OpenShorts'],
-  ['/#pricing', 'Pricing'],
+  ['/pricing', 'Pricing'],
   ['/open-source-ai-video-generator', 'Open source AI video generator'],
   [SITE.repo, 'Source on GitHub'],
 ]
@@ -428,6 +432,8 @@ const FOOTER_MORE = [
   ['/alternatives/sendshort', 'SendShort'],
   ['/alternatives/choppity', 'Choppity', { optional: true }],
   ['/alternatives/getmunch', 'Munch', { optional: true }],
+  ['/opusclip-vs-vizard', 'OpusClip vs Vizard', { optional: true }],
+  ['/alternatives/arcads', 'Arcads alternative', { optional: true }],
 ]
 
 /* Optional entries only when their page is built; without a `built` set
@@ -544,6 +550,10 @@ const ATTRIBUTION = `
  * the OpenPanel session. The inline handler reports the click with the page
  * slug, which is what tells us whether the CTA or the nav button is doing the
  * work. */
+/* The line under every "Get free clips" button: the visitor arrives from a
+ * "free" or "no watermark" answer, so the button says what free means here. */
+export const CTA_MICROCOPY = `First video free up to 60 min · no card · no watermark from $${EDITIONS.cloud.lowPrice}/month, or self-host free (MIT)`
+
 const DEFAULT_CTA = {
   label: 'Try it',
   title: 'Paste a link, get vertical clips',
@@ -563,9 +573,22 @@ const ctaBlock = (page) => {
     <strong>${esc(c.title)}</strong>
     <p>${esc(c.body)}</p>
   </div>
-  <a class="btn" href="${esc(href)}" onclick="window.op&amp;&amp;window.op('track','SeoCtaClick',{page:'${esc(page.path)}'})">${esc(c.button)}</a>
+  <div class="cta-act">
+    <a class="btn" href="${esc(href)}" onclick="window.op&amp;&amp;window.op('track','SeoCtaClick',{page:'${esc(page.path)}'})">${esc(c.button)}</a>
+    ${c.button === DEFAULT_CTA.button ? `<small class="cta-micro">${esc(CTA_MICROCOPY)}</small>` : ''}
+  </div>
 </div>`
 }
+
+/* Pages a reader reaches from an AI answer (comparisons, reviews, the free
+ * generator) start the first video in place: the paste-a-link form stands
+ * where the CTA box was. */
+const pasteLinkBlock = (page) =>
+  pasteLinkWidget({
+    placeholder: page.pasteLink?.placeholder || 'Paste a YouTube link, or any video link',
+    label: page.pasteLink?.label || 'Video link',
+    hint: CTA_MICROCOPY,
+  })
 
 /* Internal links are rendered as a visible block rather than a nav bar because
  * an engine reading the raw HTML has no way to weight a nav differently from
@@ -642,13 +665,14 @@ ${
   // but reads as the opening of the article rather than a labelled box.
   page.tldr ? `<div class="summary">${page.tldr.map((p) => `<p>${p}</p>`).join('')}</div>` : ''
 }
+${page.top || ''}
 ${page.facts ? factTiles(page.facts) : ''}
-${showCta ? ctaBlock(page) : ''}
+${page.pasteLink && !page.tool ? pasteLinkBlock(page) : showCta ? ctaBlock(page) : ''}
 ${page.body}
 ${relatedBlock(related, page.relatedTitle || t.related)}
 </div></main>
 ${footer(t, built)}
-${page.tool && toolScript ? `<script type="module" src="${esc(toolScript)}"></script>` : ''}
+${(page.tool || page.pasteLink) && toolScript ? `<script type="module" src="${esc(toolScript)}"></script>` : ''}
 </body>
 </html>`
 }

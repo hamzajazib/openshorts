@@ -18,6 +18,24 @@ import { PRICE_MODELS } from './data.js'
 const esc = (s) =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
+/* The paste-a-link form (behaviour in dashboard/tools/paste-link.js, Vite
+ * entry `tool-paste-link`). The clip tool pages put it under the H1; the
+ * comparison pages a reader reaches from an AI answer put it where the CTA box
+ * was, so the first video can be started in one step instead of a click
+ * through to the homepage. One page holds at most one: the ids are fixed. */
+export const PASTE_LINK_ENTRY = 'tool-paste-link'
+export const pasteLinkWidget = ({ placeholder = 'Paste a YouTube link, or any video link', label = 'Video link', hint = '' } = {}) => `
+<section class="tool" id="tool" aria-label="${esc(label)}">
+  <form id="pl-form" class="tool-row" autocomplete="off" novalidate>
+    <label for="pl-url" class="sr">${esc(label)}</label>
+    <input id="pl-url" name="url" type="url" inputmode="url" placeholder="${esc(placeholder)}">
+    <button type="submit" class="btn-primary">Get clips</button>
+  </form>
+  ${hint ? `<p class="tool-hint">${esc(hint)}</p>` : ''}
+  <p class="tool-hint">No link? <a id="pl-upload" href="/#app">Upload the file in the app</a> instead. Sources need at least 45 seconds of material.</p>
+  <div id="pl-status" class="tool-status" role="status" aria-live="polite" hidden></div>
+</section>`
+
 export const COMPONENTS_CSS = `
 .facts{display:grid;gap:.75rem;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));margin:0 0 2.25rem}
 .fact{background:var(--paper2);border:1px solid var(--rule2);border-radius:12px;padding:1rem 1.1rem}

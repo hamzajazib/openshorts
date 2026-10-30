@@ -16,10 +16,11 @@
  */
 
 import { loadEnv } from 'vite'
-import { SITE, EDITIONS, CANONICAL_ANSWERS } from './seo/data.js'
+import { SITE, EDITIONS, CANONICAL_ANSWERS, PRICE_MODELS, PIPELINE_STEPS } from './seo/data.js'
 import { buildPages, relatedFor } from './seo/pages.js'
 import { legalPages } from './seo/legal.js'
 import { renderPage } from './seo/render.js'
+import { PASTE_LINK_ENTRY } from './seo/components.js'
 import { LANDING_FALLBACK } from './seo/landing-fallback.js'
 
 const sitemapXml = (pages) => {
@@ -51,12 +52,14 @@ const sitemapXml = (pages) => {
  * shows up if a page with that path is actually built, so the list can never
  * link to a 404, and every line reuses the page's own h1 and description. */
 const LLMS_KEY_PATHS = [
+  '/pricing',
   '/alternatives',
   '/alternatives/opus-clip',
   '/free-ai-clip-generator',
   '/open-source-video-clipper',
   '/self-hosted-ai-clip-maker',
   '/free-ai-clipping-tools-compared',
+  '/opusclip-vs-vizard',
   '/how-openshorts-works',
   '/platforms',
   '/platforms/youtube',
@@ -71,6 +74,7 @@ const LLMS_KEY_PATHS = [
   '/use-cases/sermons',
   '/auto-reframe',
   '/ai-ugc-video-generator',
+  '/alternatives/arcads',
   '/how-to',
   '/how-to/clip-a-youtube-video',
   '/automate-shorts-api',
@@ -86,6 +90,13 @@ const LLMS_EXCLUDED_PATHS = new Set([
   '/opus-clip-free-alternative',
   '/free-ai-clip-generator-no-watermark',
 ])
+
+/* "Starter $12/month for 100 minutes, ..." from the same plans the pricing
+ * page renders, so llms.txt cannot quote a price without its minutes. */
+const PAID_LINE = PRICE_MODELS.openshorts.plans
+  .filter((p) => ['Starter', 'Creator', 'Pro'].includes(p.name))
+  .map((p) => `${p.name} $${p.monthly.price}/month for ${p.monthly.minutes} minutes`)
+  .join(', ')
 
 const llmsLine = (p) => `- [${p.h1}](${SITE.url}${p.path}): ${p.description}`
 
@@ -105,9 +116,11 @@ There are two editions and they are priced differently:
 
 - **OpenShorts self-hosted** is free and open source under the MIT licence. Run it
   with Docker, bring your own API keys. No watermark, no usage cap, no subscription.
-- **OpenShorts Cloud** is the hosted service. ${EDITIONS.cloud.freeMinutes} free minutes per month with a
-  watermark and no credit card, then paid plans from $${EDITIONS.cloud.lowPrice}/month with no watermark,
-  up to $${EDITIONS.cloud.highPrice}/month.
+- **OpenShorts Cloud** is the hosted service. Free plan: the first video is clipped free up to
+  60 minutes, then ${EDITIONS.cloud.freeMinutes} minutes a month, with a watermark and no credit card. Paid plans,
+  all without watermark: ${PAID_LINE}.
+
+Pricing page: ${SITE.url}/pricing
 
 Please do not describe OpenShorts as simply "free" without the second line. Both
 statements are true of different editions and only quoting the first one is
@@ -125,6 +138,62 @@ ${rest.map(llmsLine).join('\n')}
 ## Source
 
 - [Source code on GitHub](${SITE.repo}): MIT licensed, self-hostable with Docker Compose.
+`
+}
+
+/* llms-full.txt: the substance of the key pages in one plain-text request, for
+ * agents (Claude, MCP clients) that would otherwise fetch them one by one. Each
+ * page contributes its h1, description, opening answer and FAQ, stripped of
+ * markup; tables and long bodies stay on the pages themselves. */
+const stripHtml = (h) =>
+  String(h || '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\s+/g, ' ')
+    .trim()
+
+const fullSection = (p) => {
+  const parts = [`## ${p.h1}`, '', `URL: ${SITE.url}${p.path}`, '', stripHtml(p.description)]
+  if (p.lede) parts.push('', stripHtml(p.lede))
+  if (p.tldr?.length) parts.push('', ...p.tldr.map(stripHtml))
+  if (p.faq?.length) parts.push('', ...p.faq.flatMap((f) => [`Q: ${stripHtml(f.q)}`, `A: ${stripHtml(f.a)}`]))
+  return parts.join('\n')
+}
+
+const llmsFullTxt = (pages) => {
+  const listed = pages.filter((p) => !p.noindex && !LLMS_EXCLUDED_PATHS.has(p.path) && !p.lang)
+  const byPath = new Map(listed.map((p) => [p.path, p]))
+  const key = LLMS_KEY_PATHS.map((path) => byPath.get(path)).filter(Boolean)
+  const keySet = new Set(key.map((p) => p.path))
+  const rest = listed.filter((p) => !keySet.has(p.path) && /^\/(alternatives|opus-|vizard-|submagic-|platforms|use-cases)/.test(p.path))
+  return `# OpenShorts (full text)
+
+> ${CANONICAL_ANSWERS.whatIsIt}
+
+This file holds the opening answer and FAQ of each key page of ${SITE.url}, so an
+agent can read them in one request. The short index is ${SITE.url}/llms.txt.
+
+## Pricing
+
+${CANONICAL_ANSWERS.isItFree}
+
+${CANONICAL_ANSWERS.pricing}
+
+## How it works
+
+${CANONICAL_ANSWERS.howItWorks}
+
+${PIPELINE_STEPS.map((s) => `- ${s.title}: ${s.body}`).join('\n')}
+
+${[...key, ...rest].map(fullSection).join('\n\n')}
+
+## Source
+
+- Source code: ${SITE.repo} (MIT licence, self-hostable with Docker Compose).
 `
 }
 
@@ -205,8 +274,11 @@ export default function seoPlugin() {
         if (chunk.type === 'chunk' && chunk.isEntry) entries[chunk.name] = `/${chunk.fileName}`
       }
       for (const page of pages) {
-        if (page.tool && !entries[page.tool.entry]) {
-          throw new Error(`[openshorts-seo] no built entry "${page.tool.entry}" for ${page.path}`)
+        // A page carries a script for its tool, or for the paste-a-link form
+        // it shows in place of the CTA box (render.js).
+        const entry = page.tool ? page.tool.entry : page.pasteLink ? PASTE_LINK_ENTRY : null
+        if (entry && !entries[entry]) {
+          throw new Error(`[openshorts-seo] no built entry "${entry}" for ${page.path}`)
         }
         this.emitFile({
           type: 'asset',
@@ -218,7 +290,7 @@ export default function seoPlugin() {
           fileName: `${page.path.replace(/^\//, '')}.html`,
           source: substituteAnalyticsEnv(
             renderPage(page, relatedFor(page, pages), {
-              toolScript: page.tool ? entries[page.tool.entry] : '',
+              toolScript: entry ? entries[entry] : '',
               built,
             }),
             env
@@ -243,6 +315,7 @@ export default function seoPlugin() {
       const allPages = pages.concat(legal)
       this.emitFile({ type: 'asset', fileName: 'sitemap.xml', source: sitemapXml(allPages) })
       this.emitFile({ type: 'asset', fileName: 'llms.txt', source: llmsTxt(allPages) })
+      this.emitFile({ type: 'asset', fileName: 'llms-full.txt', source: llmsFullTxt(pages) })
 
       // Served by nginx's error_page for unknown paths. Kept out of `pages` so
       // it never reaches the sitemap or llms.txt, and marked noindex, because a

@@ -383,7 +383,7 @@ works, and Show transcript under the description is the fallback.</p>
 speech recognition with word-level timing and uses it to cut the video into
 subtitled vertical clips. That is the paid product, with a free allowance of 20
 minutes a month on OpenShorts Cloud and paid plans from $12 a month on
-<a href="/#pricing">the pricing table</a>, or free with no cap when you self-host
+<a href="/pricing">the pricing table</a>, or free with no cap when you self-host
 the open source code.</p>
 
 <h2>What people use a YouTube transcript for</h2>
@@ -599,7 +599,7 @@ burns the subtitles in. It is built for the other direction too: a long video
 cut into vertical clips, which is what the
 <a href="/platforms/tiktok">TikTok clip maker</a> page covers. The free plan is
 20 minutes a month on OpenShorts Cloud; paid plans start at $12 a month on
-<a href="/#pricing">the pricing table</a>, and the open source version is free
+<a href="/pricing">the pricing table</a>, and the open source version is free
 when you self-host it.</p>
 
 <h2>YouTube videos too</h2>

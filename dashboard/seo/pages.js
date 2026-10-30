@@ -13,7 +13,7 @@
  * one above them get quoted wrong or not at all.
  */
 
-import { SITE, COMPETITORS, COMPARISON_ROWS, EDITIONS, PIPELINE_STEPS, CANONICAL_ANSWERS, PRICE_MODELS } from './data.js'
+import { SITE, COMPETITORS, COMPARISON_ROWS, EDITIONS, PIPELINE_STEPS, CANONICAL_ANSWERS, PRICE_MODELS, ALT_PICKS } from './data.js'
 import { demoBlock, costCalculator, flowCompare, verdictCards, factTiles } from './components.js'
 import { esc } from './render.js'
 import { toolPages } from './tools.js'
@@ -22,6 +22,7 @@ import { guidePages } from './guide-pages.js'
 import { clipToolPages } from './clip-tools.js'
 import { hubPages } from './hub-pages.js'
 import { productPages } from './product-pages.js'
+import { pricingPage } from './pricing-page.js'
 
 const li = (items) => `<ul>${items.map((i) => `<li>${i}</li>`).join('')}</ul>`
 const ol = (items) => `<ol>${items.map((i) => `<li>${i}</li>`).join('')}</ol>`
@@ -188,6 +189,34 @@ const pricingParagraph = (kind = 'hub', c) => {
  * prices: the date is the first thing a reader of a pricing page looks for. */
 const checkedLede = (c, where, extra = '') =>
   `<span class="checked">Checked ${esc(monthYear(c.checked))}</span> Prices and plans read on ${esc(where)}; vendors change them without notice.${extra ? ` ${extra}` : ''}`
+
+/* The date the answer-first pass (brand and price in the opening line, the
+ * ranked alternatives list, the paste-a-link form) last changed these pages.
+ * dateModified follows the page's own substance, not the deploy. */
+const REVISED = '2026-10-30'
+
+/* OpenShorts with its price, in one clause: what an engine lifting the first
+ * sentence of a comparison page should carry away. */
+const OS_PRICE_CLAUSE = `$0 self-hosted (MIT, no watermark, no cap), or $${EDITIONS.cloud.lowPrice}/month hosted for ${PRICE_MODELS.openshorts.plans.find((p) => p.name === 'Starter').monthly.minutes} minutes`
+
+/* Comparison and review pages open on our name and price, then the check date.
+ * The rival-only first paragraph was being cited without naming us. */
+const brandLede = (c, where, lead, extra = '') =>
+  `${lead} ${checkedLede(c, where, extra)}`
+
+/* "Best <tool> alternatives in <year>": a ranked list, because that is the
+ * shape engines answer "best X alternative" in. OpenShorts first, then the
+ * next four tools in ALT_PICKS order, leaving out the page's own tool. */
+const bestAlternatives = (slug, name, checked) => {
+  const picks = ALT_PICKS.filter(([s]) => s !== slug).slice(0, 5)
+  const link = (s, label) =>
+    s === 'openshorts' ? `<a href="/pricing">${esc(label)}</a>` : COMPETITORS[s] ? `<a href="/alternatives/${s}">${esc(label)}</a>` : esc(label)
+  return `<section class="best-alts">
+<h2>Best ${esc(name)} alternatives in ${esc(checked.slice(0, 4))}</h2>
+${ol(picks.map(([s, label, line]) => `<strong>${link(s, label)}</strong>: ${esc(line)}.`))}
+<p class="checked">Prices checked ${esc(monthYear(checked))} on each vendor's public pricing page.</p>
+</section>`
+}
 
 /* Comparison pages whose brand or pricing questions are answered on a page of
  * their own. The comparison links there instead of repeating the plan list, so
@@ -382,14 +411,17 @@ ${sources([
       c.seo?.description ||
       `OpenShorts vs ${c.name}: features and pricing side by side. Self-hosted free under MIT, hosted from $12/month. ${c.name} starts at ${c.entryPrice}.`,
     h1: c.seo?.h1 || `The free, open source ${c.name} alternative`,
-    lede: checkedLede(
+    lede: brandLede(
       c,
       `${c.name}'s public pricing page`,
+      `OpenShorts is the open source ${esc(c.name)} alternative: ${esc(OS_PRICE_CLAUSE)}.`,
       comp.review ? `For what ${esc(c.name)} is and how it works, see <a href="${comp.review}">${esc(comp.reviewLabel)}</a>.` : ''
     ),
     breadcrumb: [{ name: 'Alternatives', path: '/alternatives' }, { name: c.seo?.breadcrumb || c.name }],
     published: c.published,
-    updated: c.checked,
+    updated: REVISED > c.checked ? REVISED : c.checked,
+    top: bestAlternatives(slug, c.name, c.checked),
+    pasteLink: true,
     facts: c.facts,
     relatedTitle: 'Related comparisons',
     tldr: c.tldr || [
@@ -439,9 +471,10 @@ const hubPage = () => {
     'OpenShorts vs Opus Clip, Klap, Vizard, Submagic, Quso (Vidyo.ai), 2short and SendShort: pricing checked October 2026, free plans, and where each wins.',
   h1: 'Open source alternatives to the main AI clipping tools',
   breadcrumb: [{ name: 'Alternatives' }],
-  updated: '2026-10-05',
+  updated: REVISED,
+  pasteLink: true,
   tldr: [
-    'OpenShorts is the only open source, self-hostable tool in this category. Every other tool on this page is a closed-source cloud service.',
+    `OpenShorts is the only open source, self-hostable tool in this category: ${esc(OS_PRICE_CLAUSE)}. Every other tool on this page is a closed-source cloud service.`,
     'Cheapest paid entry points as of October 2026: 2short.ai $9.90/month, OpenShorts Cloud $12/month billed monthly, then Submagic $12, Klap $14 and Vizard $14.50 a month on yearly billing, and Opus Clip $15/month. OpenShorts self-hosted is $0 with no cap.',
     'The tools are not interchangeable. Submagic is a caption editor that added clipping, Quso and SendShort are suites where clipping is one feature, and Vizard expects you in a timeline. The individual comparisons below say where each one genuinely wins.',
   ],
@@ -460,7 +493,7 @@ includes.</p>
 <table>
 <thead><tr><th>Tool</th><th>Cheapest paid plan</th><th>Free plan</th><th>Finds moments in long video</th></tr></thead>
 <tbody>
-<tr><td class="os">OpenShorts</td><td class="os">$0 self-hosted, $12/mo hosted</td><td class="os">First video free up to 60 min, then 20 min/month; self-hosted unlimited</td><td class="yes">Yes</td></tr>
+<tr><td class="os">OpenShorts</td><td class="os">$0 self-hosted, $12/mo hosted for 100 min</td><td class="os">First video free up to 60 min, then 20 min/month; self-hosted unlimited</td><td class="yes">Yes</td></tr>
 ${rows}
 </tbody>
 </table>
@@ -506,7 +539,8 @@ const freeClipGenerator = () => ({
     'Free AI clipper: long videos into 3 to 15 vertical clips with subtitles. No watermark self-hosted or on paid plans from $12/month; free Cloud plan has one.',
   h1: 'A free AI clip generator, and where "no watermark" is actually true',
   breadcrumb: [{ name: 'Free AI clip generator' }],
-  updated: '2026-10-05',
+  updated: REVISED,
+  pasteLink: true,
   relatedTitle: 'Related tools',
   cta: {
     label: 'Start free',
@@ -514,6 +548,7 @@ const freeClipGenerator = () => ({
     body: 'Paste a YouTube link, get 3 to 15 vertical clips with subtitles. Your first video is free up to 60 minutes, no credit card.',
     button: 'Get free clips',
   },
+  lede: `OpenShorts is a free, open source AI clip generator: free with no watermark and no cap when you self-host it (MIT), or in the browser with your first video clipped free up to 60 minutes (watermarked, no card) and no watermark from $${CLOUD.lowPrice}/month for ${STARTER.monthly.minutes} minutes.`,
   tldr: [
     'OpenShorts self-hosted is a free AI clip generator under the MIT licence. No watermark, no usage cap, no subscription. You run it with Docker and supply your own Google Gemini API key, whose free tier covers 1,500 requests a day.',
     'It turns a long video into 3 to 15 vertical clips: faster-whisper transcribes at word level, PySceneDetect finds the cuts, Gemini 3.1 Flash-Lite scores the moments, and MediaPipe face tracking reframes each one to 9:16.',
@@ -682,6 +717,8 @@ const openSourceClipper = () => ({
     'An MIT-licensed open source video clipper you self-host with Docker: AI moment detection, face-tracked 9:16 reframing and word-level subtitles.',
   h1: 'An open source video clipper you can self-host',
   breadcrumb: [{ name: 'Open source video clipper' }],
+  updated: REVISED,
+  lede: `OpenShorts is the open source AI clip generator: it makes video clips with AI from long videos, MIT-licensed and free to self-host with Docker (no watermark, no cap), or hosted from $${CLOUD.lowPrice}/month for ${STARTER.monthly.minutes} minutes. It is the open source alternative to Opus Clip, Klap and Vizard.`,
   tldr: [
     'OpenShorts is an MIT-licensed video clipper that runs entirely on your own hardware via Docker Compose. Source video never leaves the machine.',
     'The stack is Python 3.11, FastAPI, faster-whisper, PySceneDetect, MediaPipe, YOLOv8, FFmpeg and Google Gemini 3.1 Flash-Lite, with a React dashboard.',
@@ -919,6 +956,26 @@ const PODCAST_EXTRA_FAQ = [
   },
 ]
 
+/* The podcast tools people weigh against each other, cheapest entry plan and
+ * free plan each. Opus Clip and Vizard from COMPETITORS; Descript and Riverside
+ * are recorders/editors with a clips feature, read on their pricing pages on
+ * PODCAST_TOOLS_CHECKED (not in data.js because no other page quotes them). */
+const PODCAST_TOOLS_CHECKED = '2026-10-30'
+const PODCAST_TOOLS = `<section>
+<h2>Best AI tools for podcast clips, compared</h2>
+<table>
+<thead><tr><th>Tool</th><th>What it is</th><th>Clips from a full episode</th><th>Paid from</th><th>Free plan</th></tr></thead>
+<tbody>
+<tr><td class="os">OpenShorts</td><td class="os">Open source AI clipper (MIT)</td><td class="os">Yes: 3 to 15 clips, both speakers kept in frame</td><td class="os">$0 self-hosted · $${STARTER.monthly.price}/month hosted for ${STARTER.monthly.minutes} min</td><td class="os">First episode up to 60 min, then ${CLOUD.freeMinutes} min/month, watermarked</td></tr>
+<tr><td>Opus Clip</td><td>Cloud AI clipper</td><td>Yes</td><td>${esc(COMPETITORS['opus-clip'].entryPrice)} for 150 min</td><td>60 min/month, watermarked</td></tr>
+<tr><td>Vizard</td><td>Cloud clipper with a timeline editor</td><td>Yes, then you edit each clip</td><td>${esc(COMPETITORS.vizard.entryPrice)}, 600 min</td><td>60 min/month, 720p, watermarked</td></tr>
+<tr><td>Descript</td><td>Text-based audio and video editor</td><td>"Create clips" on paid plans</td><td>$16/month billed yearly ($24 monthly), 10 media hours</td><td>1 media hour a month, 720p, watermarked</td></tr>
+<tr><td>Riverside</td><td>Remote recording studio</td><td>Magic Clips from recordings made in Riverside</td><td>$24/month billed yearly ($29 monthly)</td><td>Yes, watermarked</td></tr>
+</tbody>
+</table>
+<p class="checked">Opus Clip and Vizard checked ${esc(monthYear(COMPETITORS['opus-clip'].checked))}; Descript and Riverside checked ${esc(monthYear(PODCAST_TOOLS_CHECKED))} on their public pricing pages. Pick Descript or Riverside if you also need to record or edit the episode; pick a clipper if the episode already exists and you want the clips.</p>
+</section>`
+
 const podcastToShorts = () => ({
   path: '/podcast-to-shorts',
   facts: [
@@ -934,7 +991,9 @@ const podcastToShorts = () => ({
   relatedTitle: 'Related tools',
   breadcrumb: [{ name: 'Use cases', path: '/use-cases' }, { name: 'Podcast clips' }],
   published: '2026-08-04',
-  updated: '2026-10-29',
+  updated: REVISED,
+  lede: `OpenShorts turns a video podcast into 3 to 15 vertical clips: it transcribes every word, picks the moments that stand alone, and keeps the active speaker in frame when two people talk. Free to self-host under MIT, or hosted from $${STARTER.monthly.price}/month for ${STARTER.monthly.minutes} minutes; your first episode is clipped free up to 60 minutes.`,
+  top: PODCAST_TOOLS,
   cta: {
     label: 'Clip an episode',
     title: 'Paste an episode link, get podcast clips',
@@ -1105,16 +1164,18 @@ const youtubeConverter = () => ({
   breadcrumb: [{ name: 'YouTube to Shorts converter' }],
   relatedTitle: 'Related tools',
   published: '2026-08-04',
-  updated: '2026-10-05',
+  updated: REVISED,
+  lede: `OpenShorts is an AI YouTube to Shorts converter: paste a YouTube link and it picks the 3 to 15 strongest moments of 15 to 60 seconds, reframes each one to 9:16 around the person speaking and burns in captions, ready for Shorts, TikTok and Reels. Your first video is free up to 60 minutes (watermarked, no card); no watermark from $${CLOUD.lowPrice}/month, or self-host it free under MIT.`,
+  pasteLink: { placeholder: 'https://www.youtube.com/watch?v=...', label: 'YouTube video link' },
   tldr: [
-    'Paste a YouTube link above and get back 3 to 15 vertical clips with subtitles, sized for Shorts, Reels and TikTok. No downloading the source and re-uploading it first.',
+    'Paste a YouTube link in the box below and get back 3 to 15 vertical clips with subtitles, sized for Shorts, Reels and TikTok. No downloading the source and re-uploading it first.',
     'The link-first flow is free on both editions: the self-hosted MIT edition has no cap, and the hosted free tier clips your first video whole up to 60 minutes, then 20 minutes a month. Uploads work on every tier too, for sources that are not online.',
     'Convert videos you have the rights to: your own channel, your clients’ with permission, or licensed footage.',
   ],
   body: `
 <h2>How to convert a YouTube video into Shorts</h2>
 <ol>
-<li>Paste a YouTube link above. OpenShorts fetches the video itself; there is no download-then-upload round trip through your machine.</li>
+<li>Paste a YouTube link in the box on this page. OpenShorts fetches the video itself; there is no download-then-upload round trip through your machine.</li>
 <li>The video is transcribed with word-level timestamps and scanned for scene boundaries.</li>
 <li>Google Gemini scores the transcript against the scenes and picks the 3 to 15 segments most likely to stand alone, 15 to 60 seconds each.</li>
 <li>Each segment is cropped to 9:16 with face tracking, or a split or screencast layout when the content calls for it, and subtitles are burned in.</li>
@@ -1182,13 +1243,23 @@ ${faqBlock([
  * intent instead of one page diluting both. */
 const automateShorts = () => ({
   path: '/automate-shorts-api',
-  title: 'Automate Shorts: Clip and Publish on a Schedule | OpenShorts',
+  title: 'AI Clipping API: Automate Shorts From Any Video | OpenShorts',
   description:
     'One POST starts the job, one signed webhook ends it. Automate shorts with the OpenShorts REST API, n8n or cron, with no per-call meter and no polling loop.',
-  h1: 'Automate shorts end to end: one request in, one webhook out',
+  h1: 'AI clipping API: automate shorts with one request in, one webhook out',
   breadcrumb: [{ name: 'Automate shorts' }],
   published: '2026-08-04',
-  updated: '2026-08-04',
+  updated: REVISED,
+  lede: `OpenShorts has an AI clipping API: one POST with a video URL returns 3 to 15 vertical clips with captions, and a webhook tells you when they are ready. It uses the same minutes as the dashboard ($${STARTER.monthly.price}/month for ${STARTER.monthly.minutes} minutes, no per-call fee), and is unmetered when self-hosted.`,
+  top: `<h2>What the clipping API costs per minute of video</h2>
+<table>
+<thead><tr><th>Plan</th><th>Price</th><th>Source minutes a month</th><th>Per source minute</th></tr></thead>
+<tbody>
+<tr><td class="os">Self-hosted (MIT)</td><td>$0</td><td>No cap</td><td>$0 (your machine and keys)</td></tr>
+${[STARTER, CREATOR, PRO].map((p) => `<tr><td class="os">${esc(p.name)}</td><td>$${p.monthly.price}/month</td><td>${p.monthly.minutes}</td><td>$${(p.monthly.price / p.monthly.minutes).toFixed(3)} ($${(p.yearly.price / p.yearly.minutes).toFixed(3)} billed yearly)</td></tr>`).join('')}
+</tbody>
+</table>
+<p>API calls, dashboard jobs and MCP tool calls all draw from the same balance; there is no separate API plan and no per-request fee. Trims, hook edits and re-renders use no minutes.</p>`,
   tldr: [
     'The whole automation loop is two HTTP messages. You POST a video URL with an API key and a webhook address; when processing ends, OpenShorts sends exactly one signed webhook carrying clip titles and durable download links. No polling loop, no timeout guessing.',
     'API calls draw from the same minute balance as the dashboard, with no separate meter and no per-call pricing. On the self-hosted edition there is no meter at all, which is what makes an always-on pipeline affordable.',
@@ -1632,10 +1703,13 @@ const OS_LANE = {
 }
 
 const OPUS = COMPETITORS['opus-clip']
+/* Our plan as the first row of every rival tier table: an engine that lifts
+ * the table for "opus clip pricing" carries the cheaper open option with it. */
+const OS_TIER_ROW = `<tr><td class="os">OpenShorts (for comparison)</td><td class="os">${esc(OS_PRICE_CLAUSE)}; first video free up to 60 minutes on the hosted free plan</td></tr>`
 const opusTierTable = (filter = () => true) =>
   `<table>
 <thead><tr><th>Plan</th><th>What it includes</th></tr></thead>
-<tbody>${OPUS.tiers
+<tbody>${OS_TIER_ROW}${OPUS.tiers
     .filter(([n]) => filter(n))
     .map(([n, d]) => `<tr><td class="os">${esc(n)}</td><td>${esc(d)}</td></tr>`)
     .join('')}</tbody>
@@ -1655,7 +1729,8 @@ const opusClipPricing = () => ({
   description:
     'Opus Clip pricing, October 2026: free plan with 60 credits, Starter $15/month, Pro $29 or $14.50/month yearly, the 7-day trial, and what one credit buys.',
   h1: 'Opus Clip pricing in 2026: the free plan, Starter, Pro and what a credit is',
-  lede: checkedLede(OPUS, 'opus.pro/pricing and the OpusClip help centre'),
+  lede: brandLede(OPUS, 'opus.pro/pricing and the OpusClip help centre',
+    `Opus Clip starts at $15/month for 150 minutes; the open source alternative, OpenShorts, is ${esc(OS_PRICE_CLAUSE)}.`),
   relatedTitle: 'Related comparisons',
   breadcrumb: [
     { name: 'Alternatives', path: '/alternatives' },
@@ -1663,7 +1738,8 @@ const opusClipPricing = () => ({
     { name: 'Pricing' },
   ],
   published: '2026-09-17',
-  updated: OPUS.checked,
+  updated: REVISED,
+  pasteLink: true,
   cta: {
     label: 'Before you upgrade',
     title: 'Run one of your videos here first',
@@ -1885,7 +1961,8 @@ const opusAi = () => ({
   description:
     'Opus AI is OpusClip, the AI video clipper at opus.pro. Yes, it has a free plan: 60 minutes a month, watermarked. Paid from $15/month. What it does, explained.',
   h1: 'Opus AI (OpusClip): what it is, what it costs, and whether it is free',
-  lede: checkedLede(OPUS, 'opus.pro and its pricing page'),
+  lede: brandLede(OPUS, 'opus.pro and its pricing page',
+    `Opus AI is OpusClip, from $15/month. Cheaper tools that do the same job: OpenShorts (open source; $0 self-hosted, $${CLOUD.lowPrice}/month hosted for ${STARTER.monthly.minutes} minutes), Vizard ($14.50/month billed yearly for 600 minutes) and Klap (from $14/month billed yearly for 100 clips).`),
   relatedTitle: 'Related comparisons',
   breadcrumb: [
     { name: 'Alternatives', path: '/alternatives' },
@@ -1893,7 +1970,8 @@ const opusAi = () => ({
     { name: 'Opus AI' },
   ],
   published: '2026-09-17',
-  updated: OPUS.checked,
+  updated: REVISED,
+  pasteLink: true,
   tldr: [
     'Opus AI is OpusClip: the AI video clipping tool at opus.pro, made by OpusClip Inc., that turns long videos into short vertical clips. It is free to start, with a free plan of 60 credits (minutes of source video) a month and watermarked exports, plus a 7-day Pro trial.',
     `Paid plans start at $15/month (Starter), billed in credits per minute of source video rather than per clip. The same company also makes Agent Opus, a separate AI video agent, and paid credits work in both.`,
@@ -2023,14 +2101,16 @@ const vizardAi = () => {
     description:
       'Vizard AI review, October 2026: what the clipper does, the free plan (60 credits, 720p, watermark), Creator from $14.50/month, pros, cons and the verdict.',
     h1: 'Vizard AI review: what it does, what it costs, and its limits',
-    lede: checkedLede(c, r.lede),
+    lede: brandLede(c, r.lede,
+      `The main open source alternative to Vizard is OpenShorts: MIT-licensed and free to self-host with no watermark or cap, or hosted from $${CLOUD.lowPrice}/month for ${STARTER.monthly.minutes} minutes. Vizard is cheaper per minute at volume (600 minutes for $29/month, $14.50 billed yearly); OpenShorts is cheaper to start and the only one you can run on your own machine.`),
     breadcrumb: [
       { name: 'Alternatives', path: '/alternatives' },
       { name: 'Vizard', path: '/alternatives/vizard' },
       { name: 'Vizard AI review' },
     ],
     published: '2026-10-05',
-    updated: c.checked,
+    updated: REVISED,
+    pasteLink: true,
     relatedTitle: 'Related comparisons',
     cta: {
       label: 'Compare on your own video',
@@ -2064,7 +2144,7 @@ the timeline by design, which is the reason to pick it and the reason not to.</p
 <h2>Vizard AI pricing in ${esc(c.checked.slice(0, 4))}</h2>
 <table>
 <thead><tr><th>Plan</th><th>What it includes</th></tr></thead>
-<tbody>${c.tiers.map(([n, d]) => `<tr><td class="os">${esc(n)}</td><td>${esc(d)}</td></tr>`).join('')}</tbody>
+<tbody>${OS_TIER_ROW}${c.tiers.map(([n, d]) => `<tr><td class="os">${esc(n)}</td><td>${esc(d)}</td></tr>`).join('')}</tbody>
 </table>
 <p>One credit is one minute of video uploaded, whatever comes out of it. The
 yearly toggle halves the price, so the $29 Creator plan is $14.50/month on a
@@ -2739,6 +2819,100 @@ ${sources([
  * comparison, a use case to its sibling use cases. relatedFor shows the first
  * three that exist, so a list can name a page another module adds (the clip
  * maker and pricing pages) and fall back to the next one until it ships. */
+/* /opusclip-vs-vizard: the two category leaders side by side, with OpenShorts
+ * as the third column. Third-party "OpusClip vs Vizard" pages are among the
+ * sources engines cite most for both brands; this one answers the same
+ * question from the numbers in data.js, dated. */
+const opusVsVizard = () => {
+  const o = COMPETITORS['opus-clip']
+  const v = COMPETITORS.vizard
+  const checked = [o.checked, v.checked].sort()[0]
+  const vendor = (c, r) => c.rows?.[r.feature] ?? (r.key ? c[r.key] : r.vendor)
+  const rows = COMPARISON_ROWS.map((r) =>
+    `<tr><td>${esc(r.feature)}</td><td>${esc(vendor(o, r))}</td><td>${esc(vendor(v, r))}</td><td class="os">${esc(r.os)}</td></tr>`
+  ).join('')
+  const tiers = (c) => li(c.tiers.map(([n, d]) => `<strong>${esc(n)}</strong>: ${esc(d)}`))
+  const faq = [
+    {
+      q: 'Is OpusClip or Vizard cheaper?',
+      a: `Per minute of video, Vizard: its Creator plan is 600 minutes for $29/month ($14.50 billed yearly), against 300 minutes for $29/month on OpusClip Pro ($14.50 billed yearly). OpusClip's Starter at $15/month for 150 minutes is the cheaper way in if you need fewer minutes. Checked ${monthYear(checked)}.`,
+    },
+    {
+      q: 'Which has the better free plan?',
+      a: 'Both give 60 minutes of source a month with a watermark. OpusClip exports up to 1080p and clips must be exported within 3 days; Vizard exports at 720p, up to 10 minutes per export, with 3-day storage.',
+    },
+    {
+      q: 'Which is better for editing clips by hand?',
+      a: `Vizard. ${v.edge} OpusClip has the larger caption-style library, AI B-roll and a virality score.`,
+    },
+    {
+      q: 'Is there an open source alternative to both?',
+      a: `OpenShorts: MIT-licensed, free to self-host with no watermark and no cap, or hosted from $${CLOUD.lowPrice}/month for ${STARTER.monthly.minutes} minutes. It bills the same unit (the source minute) on its hosted plans and none at all when you run it yourself.`,
+    },
+  ]
+  return {
+    path: '/opusclip-vs-vizard',
+    title: 'OpusClip vs Vizard (2026): Pricing, Free Plans, Editing',
+    description: `OpusClip vs Vizard, checked ${monthYear(checked)}: 300 vs 600 minutes for $29/month, free plans, editing and API. Plus OpenShorts, the open source option from $12/month.`,
+    h1: 'OpusClip vs Vizard: pricing, free plans and which to pick',
+    lede: brandLede(o, 'opus.pro/pricing and vizard.ai/pricing',
+      `OpusClip and Vizard both bill per source minute: OpusClip Pro is 300 minutes for $29/month, Vizard Creator is 600 minutes for $29/month. Pick Vizard for volume, OpusClip for its editor and templates, or OpenShorts if you want an open source option: free to self-host, $${CLOUD.lowPrice}/month hosted.`),
+    breadcrumb: [{ name: 'Alternatives', path: '/alternatives' }, { name: 'OpusClip vs Vizard' }],
+    published: REVISED,
+    updated: REVISED,
+    relatedTitle: 'Related comparisons',
+    related: ['/alternatives/opus-clip', '/alternatives/vizard', '/opus-clip-pricing', '/vizard-ai'],
+    pasteLink: true,
+    facts: [
+      { k: 'OpusClip Pro', v: '$29/mo', s: '300 minutes; $14.50/mo billed yearly' },
+      { k: 'Vizard Creator', v: '$29/mo', s: '600 minutes; $14.50/mo billed yearly' },
+      { k: 'Free plans', v: '60 min/mo', s: 'Both watermarked' },
+      { k: 'Open source', v: 'Neither', s: 'OpenShorts: MIT, self-hostable' },
+    ],
+    tldr: [
+      `Same unit, different allowance: both charge one credit per minute of source video, and at $29/month Vizard gives 600 minutes where OpusClip Pro gives 300. Billed yearly both are $14.50/month. OpusClip also sells Starter, $15/month for 150 minutes, monthly only.`,
+      `${esc(o.edge)} ${esc(v.edge)} Both free plans give 60 watermarked minutes a month.`,
+      `Neither can be self-hosted. OpenShorts is the open source third option: $0 self-hosted with no watermark or cap, or $${CLOUD.lowPrice}/month hosted for ${STARTER.monthly.minutes} minutes; per minute it costs more than Vizard at volume and less to start.`,
+    ],
+    body: `
+<h2>OpusClip vs Vizard vs OpenShorts, feature by feature</h2>
+<table>
+<thead><tr><th>Feature</th><th>OpusClip</th><th>Vizard</th><th>OpenShorts</th></tr></thead>
+<tbody>${rows}</tbody>
+</table>
+
+<h2>What would each cost for your minutes?</h2>
+<p>All three meter the source minute on their hosted plans. Move the slider to
+the minutes of video you clip in a month; each bar is the cheapest published
+plan that covers it.</p>
+${costCalculator(['opus-clip', 'vizard'])}
+
+<h2>OpusClip plans</h2>
+${tiers(o)}
+<p>${esc(o.gotcha)}</p>
+
+<h2>Vizard plans</h2>
+${tiers(v)}
+<p>${esc(v.gotcha || '')}</p>
+
+<h2>Which one should you pick?</h2>
+<ul>
+<li><strong>OpusClip</strong> if caption styling, AI B-roll and a virality score matter more than minutes, and your sources are short.</li>
+<li><strong>Vizard</strong> if you clip a lot of video, pay yearly and want to fix each clip in a timeline.</li>
+<li><strong>OpenShorts</strong> if you want it open source: free on your own machine with no meter, or hosted from $${CLOUD.lowPrice}/month, with an API and an MCP server for agents.</li>
+</ul>
+
+${faqBlock(faq)}
+
+${sources([
+  `OpusClip plans checked ${esc(o.checked)} on opus.pro/pricing; Vizard plans checked ${esc(v.checked)} on vizard.ai/pricing.`,
+  `OpenShorts plans: <a href="/pricing">pricing</a>; source at <a href="${SITE.repo}" rel="noopener">github.com/mutonby/openshorts</a>.`,
+])}
+`,
+    faq,
+  }
+}
+
 const RELATED = {
   '/alternatives': ['/free-ai-clipping-tools-compared', '/alternatives/opus-clip', '/opus-clip-pricing', '/alternatives/klap'],
   '/alternatives/opus-clip': ['/opus-clip-pricing', '/opus-ai', '/alternatives'],
@@ -2797,6 +2971,8 @@ export function buildPages() {
     mcpAgentsPage(),
     automateShorts(),
     n8nTemplate(),
+    opusVsVizard(),
+    pricingPage(),
   ].map((p) => ({
     ...p,
     related: p.related || RELATED[p.path],

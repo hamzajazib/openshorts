@@ -1,8 +1,7 @@
 /* Guide pages: self-hosting, the free-plan comparison, the "how to clip a
  * YouTube video" guide and the platform how-to guides (Reel and Shorts specs,
- * Facebook Reels, making Shorts, when to post). Pricing lives in the homepage
- * #pricing section (the standalone /pricing page was retired; nginx sends
- * /pricing to /#pricing).
+ * Facebook Reels, making Shorts, when to post). Pricing links go to the
+ * standalone /pricing page (seo/pricing-page.js).
  *
  * Every price, minute and limit on these pages is read from data.js. Where a
  * fact had to be transcribed into a structured field (the free-plan table), the
@@ -129,7 +128,8 @@ const selfHosted = () => {
       { name: 'Self-hosting guide' },
     ],
     published: PUBLISHED,
-    updated: PUBLISHED,
+    updated: '2026-10-30',
+    lede: `OpenShorts is the open source AI clip maker you can self-host: MIT-licensed, free with no watermark and no cap on your own machine with Docker, or hosted from ${money(STARTER.monthly)}/month for ${STARTER.minutes} minutes if you would rather not run it.`,
     cta: {
       label: 'Self-host or try it hosted',
       title: 'Clone it, or test the output first',
@@ -288,7 +288,7 @@ is up only while your machine is. Setup and the tool list are on
 </ul>
 <p>Nothing is feature-locked: the hosted plans pay for hardware and keys, not
 for features. If those trade-offs are not worth it to you, the
-<a href="/#pricing">Cloud plans</a> start with a free tier and go from
+<a href="/pricing">Cloud plans</a> start with a free tier and go from
 ${money(STARTER.monthly)} to ${money(PRO.monthly)} a month.</p>
 
 <h2>Self-hosted or Cloud: a quick decision</h2>
@@ -434,7 +434,7 @@ const freeCompared = () => {
     limits: 'Clips kept 7 days',
     paid: `${money(STARTER.monthly)}/month`,
     checked: OS.checked,
-    link: '/#pricing',
+    link: '/pricing',
     us: true,
   }
   const osSelf = {
@@ -504,12 +504,15 @@ const freeCompared = () => {
 
   return {
     path: '/free-ai-clipping-tools-compared',
+    // The verdict first: "best free AI clipping tool" is answered in one
+    // paragraph before the table, from the same numbers the table shows.
+    lede: `The best free AI clipping tool depends on what "free" means. Most free minutes on a hosted plan: ${esc(biggest.name)} (${biggest.min} a month at ${esc(biggest.resolution)}), then ${minutesFree.slice(1, 3).map((x) => `${esc(x.name)} (${x.min})`).join(' and ')}. No watermark and no cap: OpenShorts self-hosted (MIT), if you can run Docker. Hosted with no card: OpenShorts clips your first video free up to ${FIRST_VIDEO_MINUTES} minutes (watermarked), and removes the watermark from ${money(STARTER.monthly)}/month.`,
     title: 'Free AI Clipping Tools Compared: Who Has No Watermark?',
     description: `The free plans of ${vendorRows.length + 1} AI clipping tools side by side, checked ${asOf}: free minutes, resolution, watermark, card required, limits and paid price.`,
     h1: 'Free AI clipping tools compared: minutes, watermark and limits',
     breadcrumb: [{ name: 'Alternatives', path: '/alternatives' }, { name: 'Free plans compared' }],
     published: PUBLISHED,
-    updated: PUBLISHED,
+    updated: '2026-10-30',
     cta: {
       label: 'Free, two ways',
       title: 'Self-host with no watermark, or try it hosted',
@@ -561,7 +564,7 @@ cost to recover. The reasoning is laid out on
 <a href="/free-ai-clip-generator">the free AI clip generator page</a>.</p>
 <p>The OpenShorts Cloud free plan follows the hosted rule and says so: its clips
 are watermarked, and paid plans from ${money(STARTER.monthly)}/month are not. The
-<a href="/#pricing">pricing table on the homepage</a> has every plan.</p>
+<a href="/pricing">pricing table on the homepage</a> has every plan.</p>
 
 <h2>What happens when the free plan runs out?</h2>
 <ul>
@@ -576,7 +579,7 @@ ${faqBlock(faq)}
 
 ${sources([
   ...vendorRows.map((r) => `${esc(r.name)}: free tier and entry price checked ${esc(r.checked)}; details on <a href="${esc(r.link)}">our ${esc(r.name)} comparison</a>.`),
-  `OpenShorts: <a href="/#pricing">plans</a> and <a href="${SITE.repo}" rel="noopener">source on GitHub</a>.`,
+  `OpenShorts: <a href="/pricing">plans</a> and <a href="${SITE.repo}" rel="noopener">source on GitHub</a>.`,
 ])}
 `,
     faq,
@@ -761,7 +764,7 @@ turning a channel's long videos into Shorts, see
 no watermark and no cap. OpenShorts Cloud clips your first video free up to
 ${FIRST_VIDEO_MINUTES} minutes, then ${FREE.monthly.minutes} minutes a month with a
 watermark, and paid plans start at ${money(STARTER.monthly)}/month without one
-(<a href="/#pricing">all plans</a>).</p>
+(<a href="/pricing">all plans</a>).</p>
 
 <h2>Copyright: what you are allowed to clip</h2>
 <p>The method is the easy part. Whether you may use the clip is the one that gets
@@ -867,7 +870,7 @@ const PLAN_LINE =
   `OpenShorts Cloud has a free plan: your first video is clipped whole up to ${FIRST_VIDEO_MINUTES} minutes, then ` +
   `${FREE.monthly.minutes} minutes a month, with a watermark and no credit card. Paid plans start at ` +
   `${money(STARTER.monthly)}/month with no watermark, and the self-hosted edition is $0 under the MIT licence ` +
-  '(<a href="/#pricing">all plans</a>).'
+  '(<a href="/pricing">all plans</a>).'
 
 /* The above-the-fold aside, rendered by render.js right after the summary. */
 const guideCta = (title, body) => ({ label: 'Next step', title, body: `${body} ${PLAN_SHORT}`, button: 'Paste a link' })

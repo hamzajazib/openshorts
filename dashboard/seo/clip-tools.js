@@ -17,7 +17,7 @@
  */
 
 import { SITE, EDITIONS, COMPETITORS, PRICE_MODELS, COMPARISON_ROWS } from './data.js'
-import { demoBlock } from './components.js'
+import { demoBlock, pasteLinkWidget } from './components.js'
 import { esc } from './render.js'
 
 const PUBLISHED = '2026-10-28'
@@ -47,17 +47,7 @@ const FREE_SHORT =
 /* Shared blocks                                                             */
 /* ------------------------------------------------------------------------ */
 
-const widget = (placeholder, label) => `
-<section class="tool" id="tool" aria-label="${esc(label)}">
-  <form id="pl-form" class="tool-row" autocomplete="off" novalidate>
-    <label for="pl-url" class="sr">${esc(label)}</label>
-    <input id="pl-url" name="url" type="url" inputmode="url" placeholder="${esc(placeholder)}">
-    <button type="submit" class="btn-primary">Get clips</button>
-  </form>
-  <p class="tool-hint">${esc(FREE_SHORT)}</p>
-  <p class="tool-hint">No link? <a id="pl-upload" href="/#app">Upload the file in the app</a> instead. Sources need at least 45 seconds of material.</p>
-  <div id="pl-status" class="tool-status" role="status" aria-live="polite" hidden></div>
-</section>`
+const widget = (placeholder, label) => pasteLinkWidget({ placeholder, label, hint: FREE_SHORT })
 
 const faqBlock = (faq) =>
   `<h2>Common questions</h2><dl class="faq">${faq
@@ -147,6 +137,12 @@ const stepsBlock = (heading, steps) => `
 <h2>${esc(heading)}</h2>
 ${steps.map(([n, text], i) => `<h3>${i + 1}. ${esc(n)}</h3>\n<p>${esc(text)}</p>`).join('\n')}`
 
+/* The one-sentence answer under the H1, before the form: what AI Overviews and
+ * Gemini lift for "YouTube clip maker" style questions. Pages that carry one
+ * were revised on ANSWER_REVISED. */
+const ANSWER_REVISED = '2026-10-30'
+const ANSWER_PRICE = `Your first video is free up to ${FIRST_VIDEO_MINUTES} minutes (watermarked, no card); no watermark from $${CLOUD.lowPrice}/month, or self-host it free under MIT.`
+
 const common = (path, extra) => ({
   path,
   published: PUBLISHED,
@@ -191,6 +187,8 @@ const youtubeClipMaker = () => common('/platforms/youtube', {
   description: `Clip a YouTube video from its link: AI picks the 15-60 s moments, reframes them to 9:16 and adds captions. First video free up to ${FIRST_VIDEO_MINUTES} min, watermarked.`,
   h1: 'YouTube clip maker: clip a YouTube video from its link',
   breadcrumb: [{ name: 'Platforms', path: '/platforms' }, { name: 'YouTube clip maker' }],
+  updated: ANSWER_REVISED,
+  lede: `OpenShorts is an AI YouTube clip maker: paste a YouTube link and it picks the 3 to 15 strongest moments of 15 to 60 seconds, reframes each one to 9:16 around the person speaking and burns in captions, ready for Shorts, TikTok and Reels. ${ANSWER_PRICE}`,
   tool: { entry: 'tool-paste-link', html: widget('https://www.youtube.com/watch?v=...', 'YouTube video link') },
   cta: {
     label: 'Clip a video',
@@ -377,6 +375,8 @@ const youtubeShortsMaker = () => common('/platforms/youtube-shorts', {
   description: `Make YouTube Shorts from any long video: AI picks the moments, adds hooks and captions, and posts to your channel. First video free up to ${FIRST_VIDEO_MINUTES} min, watermarked.`,
   h1: 'YouTube Shorts maker: AI Shorts from your long videos',
   breadcrumb: [{ name: 'Platforms', path: '/platforms' }, { name: 'YouTube Shorts maker' }],
+  updated: ANSWER_REVISED,
+  lede: `OpenShorts is an AI YouTube Shorts maker: paste the link of a long video and it turns it into 3 to 15 Shorts automatically, picking moments of 15 to 60 seconds, reframing each to 9:16 around the person speaking and burning in captions and a hook. ${ANSWER_PRICE}`,
   tool: { entry: 'tool-paste-link', html: widget('Paste a link to the long video', 'Long video link') },
   cta: {
     label: 'Make Shorts',
@@ -847,6 +847,8 @@ const twitchClipMaker = () => common('/platforms/twitch', {
   description: `Twitch clip maker and AI stream clipper: paste a VOD, get 9:16 clips with your facecam kept and captions. First video free up to ${FIRST_VIDEO_MINUTES} min, then watermarked.`,
   h1: 'Twitch clip maker: AI clips from your streams and VODs',
   breadcrumb: [{ name: 'Platforms', path: '/platforms' }, { name: 'Twitch clip maker' }],
+  updated: ANSWER_REVISED,
+  lede: `OpenShorts is an AI tool that clips Twitch streams into TikToks, Shorts and Reels: paste a VOD link and it picks the moments that stand alone, cuts them into 15 to 60 second vertical clips with your facecam kept and captions burned in. ${ANSWER_PRICE} Prices of the other stream clippers are in the table further down.`,
   tool: { entry: 'tool-paste-link', html: widget('https://www.twitch.tv/videos/...', 'Twitch VOD link') },
   cta: {
     label: 'Clip a stream',
@@ -964,7 +966,7 @@ ${faqBlock(twitchFaq)}
 ${sources([
   `Competitor plans: our comparison data, checked ${longDate(COMPETITORS.klap.checked)}. See <a href="/alternatives/klap">OpenShorts vs Klap</a> and <a href="/alternatives/opus-clip">OpenShorts vs Opus Clip</a>.`,
   `Silent-footage thresholds (8 words, 5 words per minute), the vision fallback and its length ceiling: <code>main.py</code>; inset detection: <code>camera_inset.py</code>; burned-subtitle trimming: <code>burned_subtitles.py</code>. Source: <a href="${SITE.repo}" rel="noopener">github.com/mutonby/openshorts</a>.`,
-  `OpenShorts Cloud plan minutes: <a href="${SITE.url}/#pricing">pricing</a>, checked ${longDate(PRICE_MODELS.openshorts.checked)}.`,
+  `OpenShorts Cloud plan minutes: <a href="/pricing">pricing</a>, checked ${longDate(PRICE_MODELS.openshorts.checked)}.`,
 ])}
 `,
   faq: twitchFaq,
@@ -1322,6 +1324,8 @@ const sermonClipMaker = () => common('/use-cases/sermons', {
   description: `Turn Sunday's sermon into captioned vertical clips for Shorts, Reels and TikTok that follow the preacher. First video free up to ${FIRST_VIDEO_MINUTES} min, watermarked.`,
   h1: 'Sermon clip maker: turn church services into Shorts and Reels',
   breadcrumb: [{ name: 'Use cases', path: '/use-cases' }, { name: 'Sermon clip maker' }],
+  updated: ANSWER_REVISED,
+  lede: `OpenShorts is an AI tool that turns sermons into short clips: paste the replay link of a service, mark where the sermon starts and ends, and it cuts the 6 to 12 passages that hold up on their own into vertical clips with captions, keeping the preacher in frame. ${ANSWER_PRICE} Opus Clip and the other options are priced side by side further down.`,
   tool: { entry: 'tool-paste-link', html: widget('Paste the YouTube or Facebook Live replay link', 'Service replay link') },
   cta: {
     label: 'Clip this Sunday',

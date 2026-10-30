@@ -1224,7 +1224,7 @@ export default function Landing({ onLaunchApp }) {
             <a href="/auto-reframe" className="hover:text-ink transition-colors">auto reframe</a>
             <a href="/use-cases/sermons" className="hover:text-ink transition-colors">sermon clip maker</a>
             <a href="/how-to/clip-a-youtube-video" className="hover:text-ink transition-colors">how to clip a youtube video</a>
-            <a href="/#pricing" className="hover:text-ink transition-colors">pricing</a>
+            <a href="/pricing" className="hover:text-ink transition-colors">pricing</a>
             <a href="/open-source-video-clipper" className="hover:text-ink transition-colors">open source video clipper</a>
             <a href="/self-hosted-ai-clip-maker" className="hover:text-ink transition-colors">self-hosted ai clip maker</a>
             <a href="/podcast-to-shorts" className="hover:text-ink transition-colors">podcast clips</a>
