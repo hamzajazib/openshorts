@@ -29,3 +29,13 @@ def test_wrong_email_or_password_is_refused(monkeypatch):
                   json={"email": "other@example.com", "password": "correct-horse"}).status_code == 401
     assert c.post("/api/auth/review-login",
                   json={"email": "review@example.com", "password": "wrong"}).status_code == 401
+
+
+def test_login_method_flags_only_the_review_account(monkeypatch):
+    monkeypatch.setenv("REVIEW_LOGIN_EMAIL", "Review@Example.com")
+    monkeypatch.setenv("REVIEW_LOGIN_PASSWORD", "correct-horse")
+    c = _client()
+    assert c.post("/api/auth/login-method", json={"email": "review@example.com"}).json() == {"password": True}
+    assert c.post("/api/auth/login-method", json={"email": "other@example.com"}).json() == {"password": False}
+    monkeypatch.delenv("REVIEW_LOGIN_PASSWORD")
+    assert c.post("/api/auth/login-method", json={"email": "review@example.com"}).json() == {"password": False}

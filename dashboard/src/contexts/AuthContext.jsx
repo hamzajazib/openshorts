@@ -164,6 +164,22 @@ export function AuthProvider({ children }) {
     return { passwordRequired: !!data.password_required };
   }, []);
 
+  // Whether this email signs in with a password (only the app-directory review
+  // account does). Asked while the email is typed, so no link is ever sent.
+  const usesPassword = useCallback(async (email) => {
+    try {
+      const res = await apiFetch('/api/auth/login-method', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (!res.ok) return false;
+      return !!(await res.json()).password;
+    } catch (_) {
+      return false;
+    }
+  }, []);
+
   const loginWithPassword = useCallback(async (email, password) => {
     const res = await apiFetch('/api/auth/review-login', {
       method: 'POST',
@@ -217,6 +233,7 @@ export function AuthProvider({ children }) {
     refreshMe,
     requestMagicLink,
     loginWithPassword,
+    usesPassword,
     loginWithGoogle,
     logout,
   };

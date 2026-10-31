@@ -398,6 +398,20 @@ def _review_email() -> str:
     return email_policy.normalize_email(settings.review_login_email)
 
 
+class LoginMethodRequest(BaseModel):
+    email: EmailStr
+
+
+@router.post("/api/auth/login-method")
+async def login_method(payload: LoginMethodRequest):
+    """Tell the sign-in form, as the email is typed, whether it signs in with a
+    password. Only the review account does; everyone else gets the magic link.
+    Reviewers are handed a username and a password, so the password field has
+    to be on screen before they press anything that reads "email me a link"."""
+    email = email_policy.normalize_email(payload.email)
+    return {"password": review_login_enabled() and hmac.compare_digest(email, _review_email())}
+
+
 @router.post("/api/auth/review-login")
 async def review_login(payload: ReviewLoginRequest):
     """Password sign-in for the single account named by REVIEW_LOGIN_EMAIL.

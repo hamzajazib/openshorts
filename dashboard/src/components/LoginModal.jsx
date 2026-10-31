@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Mail, Lock, Check, Loader2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import Modal from './ui/Modal';
@@ -8,13 +8,27 @@ import Modal from './ui/Modal';
 // request is parked: the work resumes by itself once they are back, and saying
 // so is the difference between a sign-in wall and a saved job.
 export default function LoginModal({ onClose, queued = false }) {
-  const { requestMagicLink, loginWithPassword, loginWithGoogle, googleAuthEnabled } = useAuth();
+  const { requestMagicLink, loginWithPassword, usesPassword, loginWithGoogle, googleAuthEnabled } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [needsPassword, setNeedsPassword] = useState(false);
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+
+  // App-directory reviewers are given a username and a password: show the
+  // password field as soon as their email is typed, before any button that
+  // reads like an email verification step.
+  useEffect(() => {
+    const value = email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) { setNeedsPassword(false); return undefined; }
+    let live = true;
+    const t = setTimeout(async () => {
+      const yes = await usesPassword(value);
+      if (live) setNeedsPassword(yes);
+    }, 300);
+    return () => { live = false; clearTimeout(t); };
+  }, [email, usesPassword]);
 
   const submit = async (e) => {
     e.preventDefault();

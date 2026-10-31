@@ -64,6 +64,21 @@ function AccountView() {
   return <PageShell><AccountPage /></PageShell>;
 }
 
+// Direct sign-in page (#/login), the URL handed to app-directory reviewers:
+// the sign-in form opens straight away and a signed-in visitor goes to the app.
+function LoginView() {
+  const { isSignedIn, loading } = useAuth();
+  const toApp = () => { window.location.hash = '#app'; };
+  useEffect(() => {
+    if (!loading && isSignedIn) toApp();
+  }, [loading, isSignedIn]);
+  return (
+    <PageShell>
+      {!loading && !isSignedIn && <LoginModal onClose={toApp} />}
+    </PageShell>
+  );
+}
+
 // Landing spot after an account is erased. Its own view because the session is
 // gone: sending the user to #/account would bounce them to pricing with no
 // explanation.
@@ -95,6 +110,7 @@ function Root() {
     if (hash.startsWith('#/account')) return 'account';
     if (hash.startsWith('#/deleted')) return 'deleted';
     if (hash.startsWith('#/pricing')) return 'pricing';
+    if (hash.startsWith('#/login')) return 'login';
     if (hash === '#legal') return 'legal';
     // The app lives at #app (and #app?tab=… deep links). Everything else,
     // including a bare / and the section anchors (#features, #pricing…) and
@@ -102,7 +118,7 @@ function Root() {
     // visitor" shortcut into the app: the static fallback is the landing, so
     // swapping it for the app after hydration made / jump a second after load,
     // and the logo of every page has to reach the landing.
-    if (hash === '#app' || hash.startsWith('#app?')) return 'app';
+    if (hash === '#app' || hash.startsWith('#app?') || hash === '#/app') return 'app';
     return 'landing';
   };
 
@@ -121,6 +137,7 @@ function Root() {
 
   if (view === 'legal') return <Legal />;
   if (view === 'pricing') return <PricingView />;
+  if (view === 'login') return <LoginView />;
   if (view === 'account') return <AccountView />;
   if (view === 'oauth') return <OAuthConsent />;
   if (view === 'deleted') return <DeletedView />;
